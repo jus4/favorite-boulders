@@ -1,0 +1,29 @@
+package layouts
+
+import (
+	"github.com/jus4/favorite-boulders/internal/templates/components"
+	"github.com/jus4/favorite-boulders/internal/helpers"
+)
+
+var timeStamp = helpers.GetTimeStamp()
+var styleSheet = "./static/master.css?v=" + timeStamp
+templ Layout(title string, children...templ.Component) {
+  <html>
+    <head>
+      <title>
+        { title }
+      </title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link href={ styleSheet } rel="stylesheet">
+      <script src="https://unpkg.com/htmx.org@2.0.3"></script>
+    </head>
+    <body>
+      <main id="main border">
+        @components.Header()
+        { children... }
+      </main>
+    </body>
+  </html>
+}
+

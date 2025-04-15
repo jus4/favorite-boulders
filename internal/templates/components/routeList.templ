@@ -1,0 +1,18 @@
+package components
+
+type RouteListProps struct { 
+  Name string
+  SectorName string
+}
+
+templ RouteList(routes []RouteListProps) {
+  <ul>
+  for _, item := range routes {
+    <li class="py-2 px-4">
+      <span>{item.Name}</span>
+      <span class="px-2">|</span>
+      <span>{item.SectorName}</span>
+    </li>
+  }
+  </ul>
+}

@@ -1,0 +1,24 @@
+package components
+
+templ Header() {
+  <header class="container py-6">
+    <div class="flex w-full justify-between">
+      <div>
+        Favourite climbs
+      </div>
+      <div class="flex-grow flex justify-end">
+        <ul class="flex items-center gap-6">
+          <li>
+            @QuickSearchButton() {
+              Search ctrl k
+            }
+          </li>
+          <li>Favorite lists</li>
+          <li>Login</li>
+          <li>About</li>
+        </ul>
+      </div>
+
+    </div>
+  </header>
+}

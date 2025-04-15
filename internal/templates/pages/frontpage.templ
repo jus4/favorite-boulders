@@ -1,0 +1,19 @@
+package pages
+import (
+  "github.com/jus4/favorite-boulders/internal/templates/layouts"
+)
+
+templ FrontPage(title string, contents templ.Component) {
+  @layouts.Layout(title) {
+    <div>
+      <div class="">
+        <div class="bg-white">
+          <h1>frontpage !!</h1>
+          if contents != nil {
+            @contents
+          }
+        </div>
+      </div>
+    </div>
+  }
+}

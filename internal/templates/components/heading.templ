@@ -1,0 +1,27 @@
+package components
+
+type HeadingLevel string
+
+const (
+    H1 HeadingLevel = "h1"
+    H2 HeadingLevel = "h2"
+    H3 HeadingLevel = "h3"
+    H4 HeadingLevel = "h4"
+)
+
+templ Heading(level HeadingLevel, children...templ.Component) {
+  switch level {
+    case H1:
+      <h1 class="text-2xl font-bold mb-4">{ children... }</h1>
+    case H2:
+      <h2>{ children... }</h2>
+    case H3:
+      <h3>{ children... }</h3>
+    case H4:
+      <h4>{ children... }</h4>
+  }
+}
+
+templ Paragraph(children...templ.Component) {
+  <p>{ children...}</p>
+}
