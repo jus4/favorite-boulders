@@ -7,6 +7,8 @@ import (
   "os"
   "io"
   "net/http"
+  "github.com/joho/godotenv"
+  "log"
 	"github.com/labstack/echo/v4"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -42,8 +44,11 @@ func GetRoutesByName(c echo.Context) error {
 }
 
 func FetchRoutesByName(keyword string) ([]queries.GetRoutesByNameRow, error)  {
-  dbUrl := "postgres://postgres:hju23e@localhost:5432/favorite_climbs"
-  conn, err := pgx.Connect(context.Background(), dbUrl)
+  err := godotenv.Load()
+  if err != nil {
+    log.Fatal("Error loading .env file")
+  }
+  conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
   if err != nil {
           fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
           os.Exit(1)
