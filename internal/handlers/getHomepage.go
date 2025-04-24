@@ -8,6 +8,5 @@ import (
 )
 
 func HomePage(c echo.Context) error {
-
   return helpers.Render(c, http.StatusOK, pages.FrontPage("homePage", nil))
 }

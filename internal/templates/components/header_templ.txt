@@ -1,3 +1,10 @@
-<header class=\"container py-6\"><div class=\"flex w-full justify-between\"><div>Favourite climbs</div><div class=\"flex-grow flex justify-end\"><ul class=\"flex items-center gap-6\"><li>
+<header class=\"container py-6\">
+<div class=\"w-full flex justify-end\"><a href=\"/auth/logout\" class=\"mr-2\">Logout</a><span>
+</span></div>
+<div class=\"flex w-full justify-between\"><div>Favourite climbs</div><div class=\"flex-grow flex justify-end\"><ul class=\"flex items-center gap-6\"><li>
 Search ctrl k
-</li><li>Favorite lists</li><li>Login</li><li>About</li></ul></div></div></header>
+</li><li>Favorite lists</li><li>About</li>
+<li><a href=\"/account/\" data=\"
+\">Account</a></li>
+<li><a href=\"/auth/google/login\">login</a></li>
+</ul><div></div></div></div></header>

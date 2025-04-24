@@ -1,7 +1,16 @@
 package components
 
+import ( 
+  "github.com/jus4/favorite-boulders/internal/middleware"
+)
+
 templ Header() {
   <header class="container py-6">
+    if user := middleware.GetUserID(ctx); user.OK {
+      <div class="w-full flex justify-end"> 
+        <a href="/auth/logout" class="mr-2">Logout</a><span>{user.ID}</span>
+      </div>
+    }
     <div class="flex w-full justify-between">
       <div>
         Favourite climbs
@@ -14,11 +23,16 @@ templ Header() {
             }
           </li>
           <li>Favorite lists</li>
-          <li>Login</li>
           <li>About</li>
+          if user := middleware.GetUserID(ctx); user.OK {
+            <li><a href="/account/" data={user.ID}>Account</a></li>
+          } else {
+            <li><a href="/auth/google/login">login</a></li>
+          }
         </ul>
+        <div>
+        </div>
       </div>
-
     </div>
   </header>
 }
