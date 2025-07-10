@@ -1,0 +1,14 @@
+package components
+
+import (
+	"github.com/jus4/favorite-boulders/internal/model"
+)
+
+templ FavouritesList(favourites []model.FavoriteList) {
+  <h2>Your favourites</h2>
+  <ul id="favourites-list">
+    for _, item := range favourites {
+      <li>{item.Name}<br/>{item.Description}</li>
+    }
+  </ul>
+}

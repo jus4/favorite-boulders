@@ -1,0 +1,108 @@
+package pages
+
+import (
+  "github.com/jus4/favorite-boulders/internal/templates/layouts"
+	"github.com/jus4/favorite-boulders/internal/model"
+)
+
+
+var favouritesScripts = templ.NewOnceHandle()
+
+templ FavouriteClimbs(metadata model.Metadata, contents templ.Component) {
+  @layouts.Layout(metadata) {
+    <div class="container">
+      <div class="bg-white">
+        <h1>Favourite Climbs</h1>
+        <p>Create sharable lists of your favourite climbs</p>
+        <form 
+          hx-post="/api/favourites-create"
+          hx-target="#message"
+          hx-swap="innerHTML"
+        >
+          <div class="flex flex-col">
+            <label>Name</label>
+            <input class="border" type="text" name="favourites_name" />
+          </div>
+          <div class="flex flex-col">
+            <label>Description</label>
+            <textarea class="border" name="description" />
+          </div>
+          <div>
+            <h2>Selected routes</h2>
+            <div id="selected-climbs"></div>
+            <ul id="selected-climbs-list"></ul>
+            <label>Add routes</label>
+            <input id="favourites-searh-input" 
+              type="search"
+              class="relative p-2 border rounded-sm w-full"
+              name="route-search" placeholder="Search for a climb"
+              hx-post="/api/search-route/"
+              hx-trigger="input changed delay:500ms"
+              hx-target="#favourites-selection"
+            >
+            <div id="favourites-selection" class="relative z-30"></div>
+            @favouritesScripts.Once(){
+              <script>
+                document.body.addEventListener('htmx:afterSwap', function(evt) {
+                    if (evt.target.id === "favourites-selection") {
+                      attachListeners();
+                    }
+                });
+
+                // const routeSearchInput = document.getElementById("favourites-searh-input");
+                // if (routeSearchInput) {
+                //   routeSearchInput.addEventListener("blur", function () {
+                //     const resultBox = document.getElementById('favourites-selection');
+                //     resultBox.style.display = 'none'; // or clear content, etc.
+                //   });
+                //   routeSearchInput.addEventListener("focus", function () {
+                //     const resultBox = document.getElementById('favourites-selection');
+                //     resultBox.style.display = 'block'; // or clear content, etc.
+                //   });
+                // }
+
+                document.addEventListener('click', function(event) {
+                  const input = document.getElementById('favourites-searh-input');
+                  const resultBox = document.getElementById('favourites-selection');
+                
+                  if (!input.contains(event.target) && !resultBox.contains(event.target)) {
+                    resultBox.style.display = 'none';
+                  }
+                });
+
+                
+                function addRoute() {
+                  const selectedClimbs = document.getElementById("selected-climbs")
+                  const selectedClimbsList = document.getElementById("selected-climbs-list")
+                  const input = document.createElement("input")
+                  const routeName = document.createElement("li")
+
+                  input.type = "hidden"
+                  input.name = "selected_climbs[]";
+                  input.value = this.dataset.id;
+
+                  routeName.innerHTML = this.dataset.name
+
+                  selectedClimbs.appendChild(input)
+                  selectedClimbsList.appendChild(routeName)
+
+                }
+
+                function attachListeners() {
+                  document.querySelectorAll('.add-route-btn').forEach(btn => {
+                      btn.addEventListener('click', addRoute)
+                  });
+                }
+              </script>
+            }
+          </div>
+          <button>Save list</button>
+          <div id="message"></div>
+        </form>
+        if contents != nil {
+          @contents
+        }
+      </div>
+    </div>
+  }
+}

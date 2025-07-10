@@ -9,38 +9,57 @@ import (
 )
 
 type Area struct {
-	AreaID  int64
-	ParamID pgtype.Text
-	Name    pgtype.Text
-	Country pgtype.Text
+	AreaID  int64       `json:"area_id"`
+	Name    pgtype.Text `json:"name"`
+	Country pgtype.Text `json:"country"`
 }
 
 type Crag struct {
-	CragID            int64
-	AreaID            pgtype.Int8
-	ParamID           pgtype.Text
-	PremiumTopoActive pgtype.Bool
-	Latitude          pgtype.Float8
-	Longitude         pgtype.Float8
-	Name              pgtype.Text
-	Info              pgtype.Text
-	Url               pgtype.Text
+	CragID            int64         `json:"crag_id"`
+	AreaID            pgtype.Int8   `json:"area_id"`
+	ParamID           pgtype.Text   `json:"param_id"`
+	PremiumTopoActive pgtype.Bool   `json:"premium_topo_active"`
+	Latitude          pgtype.Float8 `json:"latitude"`
+	Longitude         pgtype.Float8 `json:"longitude"`
+	Name              pgtype.Text   `json:"name"`
+	Info              pgtype.Text   `json:"info"`
+	Url               pgtype.Text   `json:"url"`
 }
 
 type Route struct {
-	RouteID   int64
-	SectorID  pgtype.Int8
-	CragID    pgtype.Int8
-	Title     pgtype.Text
-	Grade     pgtype.Text
-	RouteType pgtype.Text
+	RouteID   int64       `json:"route_id"`
+	SectorID  pgtype.Int8 `json:"sector_id"`
+	CragID    pgtype.Int8 `json:"crag_id"`
+	Title     pgtype.Text `json:"title"`
+	Grade     pgtype.Text `json:"grade"`
+	RouteType pgtype.Text `json:"route_type"`
 }
 
 type Sector struct {
-	SectorID  int64
-	CragID    pgtype.Int8
-	Name      pgtype.Text
-	Url       pgtype.Text
-	Latitude  pgtype.Float8
-	Longitude pgtype.Float8
+	SectorID  int64         `json:"sector_id"`
+	CragID    pgtype.Int8   `json:"crag_id"`
+	Name      pgtype.Text   `json:"name"`
+	Url       pgtype.Text   `json:"url"`
+	Latitude  pgtype.Float8 `json:"latitude"`
+	Longitude pgtype.Float8 `json:"longitude"`
+}
+
+type User struct {
+	ID        pgtype.UUID        `json:"id"`
+	Email     string             `json:"email"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt pgtype.Timestamptz `json:"updated_at"`
+}
+
+type UserFavouriteClimbItem struct {
+	ID                 pgtype.UUID `json:"id"`
+	RouteID            pgtype.Int8 `json:"route_id"`
+	FavouriteClimbList pgtype.UUID `json:"favourite_climb_list"`
+}
+
+type UserFavouriteList struct {
+	ID          pgtype.UUID `json:"id"`
+	Name        pgtype.Text `json:"name"`
+	Description pgtype.Text `json:"description"`
+	Owner       string      `json:"owner"`
 }

@@ -21,7 +21,7 @@ live/tailwind:
 
 # run esbuild to generate the index.js bundle in watch mode.
 live/esbuild:
-	npx --yes esbuild js/index.ts --bundle --outdir=assets/ --watch
+	npx --yes esbuild ./internal/js/master.ts --bundle --outdir=static/ --watch
 
 # watch for any js or css change in the assets/ folder, then reload the browser via templ proxy.
 live/sync_assets:

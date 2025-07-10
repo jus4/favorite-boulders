@@ -11,6 +11,77 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const createFavoriteClimbList = `-- name: CreateFavoriteClimbList :one
+INSERT INTO user_favourite_lists (name, description, owner)
+VALUES ($1, $2, $3)
+RETURNING id, name, description, owner
+`
+
+type CreateFavoriteClimbListParams struct {
+	Name        pgtype.Text `json:"name"`
+	Description pgtype.Text `json:"description"`
+	Owner       string      `json:"owner"`
+}
+
+func (q *Queries) CreateFavoriteClimbList(ctx context.Context, arg CreateFavoriteClimbListParams) (UserFavouriteList, error) {
+	row := q.db.QueryRow(ctx, createFavoriteClimbList, arg.Name, arg.Description, arg.Owner)
+	var i UserFavouriteList
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.Owner,
+	)
+	return i, err
+}
+
+const createUser = `-- name: CreateUser :one
+INSERT INTO users (email) VALUES ($1)
+RETURNING id, email, created_at, updated_at
+`
+
+func (q *Queries) CreateUser(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRow(ctx, createUser, email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getFavoriteClimbsList = `-- name: GetFavoriteClimbsList :many
+SELECT id, name, description, owner from user_favourite_lists
+WHERE owner = $1
+`
+
+func (q *Queries) GetFavoriteClimbsList(ctx context.Context, owner string) ([]UserFavouriteList, error) {
+	rows, err := q.db.Query(ctx, getFavoriteClimbsList, owner)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []UserFavouriteList
+	for rows.Next() {
+		var i UserFavouriteList
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Description,
+			&i.Owner,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getRoutes = `-- name: GetRoutes :many
 SELECT route_id, sector_id, crag_id, title, grade, route_type FROM route
 ORDER BY title
@@ -46,6 +117,7 @@ func (q *Queries) GetRoutes(ctx context.Context) ([]Route, error) {
 
 const getRoutesByName = `-- name: GetRoutesByName :many
 SELECT 
+  r.route_id,
   r.title,
   r.grade,
   c.name as grag_name,
@@ -59,18 +131,24 @@ JOIN
   crag as c 
 ON
   c.crag_id = r.crag_id
+JOIN areas AS a 
+ON 
+  c.area_id = a.area_id 
 WHERE
   r.title ILIKE $1
+AND 
+  a.country = 'Finland'
 ORDER
   by r.title
 LIMIT 50
 `
 
 type GetRoutesByNameRow struct {
-	Title      pgtype.Text
-	Grade      pgtype.Text
-	GragName   pgtype.Text
-	SectorName pgtype.Text
+	RouteID    int64       `json:"route_id"`
+	Title      pgtype.Text `json:"title"`
+	Grade      pgtype.Text `json:"grade"`
+	GragName   pgtype.Text `json:"grag_name"`
+	SectorName pgtype.Text `json:"sector_name"`
 }
 
 func (q *Queries) GetRoutesByName(ctx context.Context, title pgtype.Text) ([]GetRoutesByNameRow, error) {
@@ -83,11 +161,157 @@ func (q *Queries) GetRoutesByName(ctx context.Context, title pgtype.Text) ([]Get
 	for rows.Next() {
 		var i GetRoutesByNameRow
 		if err := rows.Scan(
+			&i.RouteID,
 			&i.Title,
 			&i.Grade,
 			&i.GragName,
 			&i.SectorName,
 		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getRoutesBySector = `-- name: GetRoutesBySector :many
+SELECT 
+  r.route_id,
+  r.title,
+  r.route_type,
+  r.grade,
+  s.name as sector_name
+FROM route as r
+JOIN sector as s
+  ON s.sector_id = r.sector_id
+WHERE
+  r.sector_id = $1
+`
+
+type GetRoutesBySectorRow struct {
+	RouteID    int64       `json:"route_id"`
+	Title      pgtype.Text `json:"title"`
+	RouteType  pgtype.Text `json:"route_type"`
+	Grade      pgtype.Text `json:"grade"`
+	SectorName pgtype.Text `json:"sector_name"`
+}
+
+func (q *Queries) GetRoutesBySector(ctx context.Context, sectorID pgtype.Int8) ([]GetRoutesBySectorRow, error) {
+	rows, err := q.db.Query(ctx, getRoutesBySector, sectorID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetRoutesBySectorRow
+	for rows.Next() {
+		var i GetRoutesBySectorRow
+		if err := rows.Scan(
+			&i.RouteID,
+			&i.Title,
+			&i.RouteType,
+			&i.Grade,
+			&i.SectorName,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getSectors = `-- name: GetSectors :many
+SELECT 
+  s.latitude,
+  s.longitude,
+  s.name,
+  s.sector_id,
+  c.name as crag_name
+FROM sector AS s 
+INNER JOIN crag AS c 
+  on s.crag_id = c.crag_id 
+JOIN areas AS a 
+  on c.area_id = a.area_id 
+WHERE a.country = 'Finland'
+`
+
+type GetSectorsRow struct {
+	Latitude  pgtype.Float8 `json:"latitude"`
+	Longitude pgtype.Float8 `json:"longitude"`
+	Name      pgtype.Text   `json:"name"`
+	SectorID  int64         `json:"sector_id"`
+	CragName  pgtype.Text   `json:"crag_name"`
+}
+
+func (q *Queries) GetSectors(ctx context.Context) ([]GetSectorsRow, error) {
+	rows, err := q.db.Query(ctx, getSectors)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetSectorsRow
+	for rows.Next() {
+		var i GetSectorsRow
+		if err := rows.Scan(
+			&i.Latitude,
+			&i.Longitude,
+			&i.Name,
+			&i.SectorID,
+			&i.CragName,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getUserByEmail = `-- name: GetUserByEmail :one
+SELECT id, email, created_at, updated_at FROM users WHERE email = $1 
+LIMIT 1
+`
+
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByEmail, email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const insertFavuriteClimbsItems = `-- name: InsertFavuriteClimbsItems :many
+INSERT INTO user_favourite_climb_items (route_id, favourite_climb_list)
+SELECT unnest($1::int[]), $2::uuid
+RETURNING id, route_id, favourite_climb_list
+`
+
+type InsertFavuriteClimbsItemsParams struct {
+	Column1 []int32     `json:"column_1"`
+	Column2 pgtype.UUID `json:"column_2"`
+}
+
+func (q *Queries) InsertFavuriteClimbsItems(ctx context.Context, arg InsertFavuriteClimbsItemsParams) ([]UserFavouriteClimbItem, error) {
+	rows, err := q.db.Query(ctx, insertFavuriteClimbsItems, arg.Column1, arg.Column2)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []UserFavouriteClimbItem
+	for rows.Next() {
+		var i UserFavouriteClimbItem
+		if err := rows.Scan(&i.ID, &i.RouteID, &i.FavouriteClimbList); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

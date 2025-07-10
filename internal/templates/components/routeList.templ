@@ -1,8 +1,17 @@
 package components
 
 type RouteListProps struct { 
+  Id string
   Name string
   SectorName string
+  Grade string
+}
+
+type FavouritesListProps struct { 
+  Name string
+  SectorName string
+  Grade string
+  ID string
 }
 
 templ RouteList(routes []RouteListProps) {
@@ -14,5 +23,46 @@ templ RouteList(routes []RouteListProps) {
       <span>{item.SectorName}</span>
     </li>
   }
+  </ul>
+}
+
+templ SectorRouteList( routes []RouteListProps, title string) {
+  <div class="bg-light-gray">
+    <h2 class="text-light-white px-8 py-4">{title}</h2>
+    <ul>
+    for _, item := range routes {
+      <li class="py-1 text-white border-b border-dark-charkol px-8 py-4">
+        <div class="flex w-full justify-between">
+          <div class="flex flex-col">
+            <div>{item.Name}</div>
+            <span>{item.Grade}</span>
+          </div>
+          <button data-route-id={ item.Id } class="border js-route-info-btn">></button>
+        </div>
+      </li>
+    }
+    </ul>
+    <div id="climb-information-container" class="absolute top-0 w-full h-full bg-white border hidden">
+      for _, item := range routes {
+        <div data-route-info={ item.Id }>
+          <h3 class="text-white font-bold py-4 px-8">{ item.Name }</h3>
+          <div>
+            <img src="https://placehold.co/600x800" />
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}
+
+
+var favouritesScripts = templ.NewOnceHandle()
+
+templ FavouriteRouteSelector( routes []FavouritesListProps ) {
+  <input type="hidden" name="routes_include" />
+  <ul class="absolute top-0 left-0 border w-full z-30 bg-white">
+    for _, item := range routes {
+     <li>{item.Name} - {item.Grade} | {item.SectorName} <button data-name={item.Name}  data-id={item.ID} type="button" class="add-route-btn">Add to list</button></li>
+    }
   </ul>
 }

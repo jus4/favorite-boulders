@@ -1,19 +1,32 @@
 package pages
+
 import (
   "github.com/jus4/favorite-boulders/internal/templates/layouts"
+  "github.com/jus4/favorite-boulders/internal/model"
 )
 
-templ FrontPage(title string, contents templ.Component) {
-  @layouts.Layout(title) {
-    <div>
-      <div class="">
-        <div class="bg-white">
-          <h1>frontpage !!</h1>
-          if contents != nil {
-            @contents
-          }
-        </div>
+templ FrontPage(metadata model.Metadata, contents templ.Component) {
+  @layouts.Layout(metadata) {
+   <div class="bg-white">
+     <div id="map" class="relative w-full h-[calc(100vh-90px)] md:h-full">
+       <div id="popup" class="ol-popup">
+         <div id="popup-content"></div>
+       </div>
+
+      <div 
+         id="sector-info" 
+         class="hidden absolute bottom-0 h-1/3 md:h-full w-full md:w-[400px] z-20 bg-dark-charkol right-[0] overflow-hidden"
+       >
+         <div class="sector-route-list h-full overflow-scroll"></div>
+         <div id="sector-route-info" class="absolute top-0 bg-dark-charkol h-full w-full overflow-scroll hidden">
+          <button id="close-route-info-btn" class="ml-8 mt-4 text-white">Takaisin > </button>
+          <div id="sector-route-info-content"></div>
+         </div>
       </div>
-    </div>
+     </div>
+     if contents != nil {
+       @contents
+     }
+   </div>
   }
 }

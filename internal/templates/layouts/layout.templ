@@ -3,26 +3,42 @@ package layouts
 import (
 	"github.com/jus4/favorite-boulders/internal/templates/components"
 	"github.com/jus4/favorite-boulders/internal/helpers"
+  "github.com/jus4/favorite-boulders/internal/model"
 )
 
 var timeStamp = helpers.GetTimeStamp()
-var styleSheet = "./static/master.css?v=" + timeStamp
-templ Layout(title string, children...templ.Component) {
+var styleSheet = "/static/master.css?v=" + timeStamp
+var jsScripts = "/static/master.js?v=" + timeStamp
+
+templ Layout(metadata model.Metadata, children...templ.Component) {
   <html>
     <head>
       <title>
-        { title }
+        { metadata.Title }
       </title>
+      if metadata.Description != nil {
+        <meta content="{ metadata.Description }" name="description">
+      }
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link href={ styleSheet } rel="stylesheet">
+      <script src={ jsScripts }></script>
       <script src="https://unpkg.com/htmx.org@2.0.3"></script>
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/proj4@2.11.0/dist/proj4.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/ol@v10.5.0/dist/ol.js"></script>
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol-layerswitcher@4.1.1/dist/ol-layerswitcher.css" />
+      <script src="https://cdn.jsdelivr.net/npm/ol-layerswitcher@4.1.1/dist/ol-layerswitcher.js"></script>
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v10.5.0/ol.css">
+      <link rel="stylesheet" href="http://www.openlayers.org/api/theme/default/style.css">
     </head>
     <body>
-      <main id="main border">
         @components.Header()
-        { children... }
-      </main>
+        <main id="main">
+          { children... }
+        </main>
     </body>
   </html>
 }

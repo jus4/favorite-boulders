@@ -1,0 +1,5 @@
+<h2>Your favourites</h2><ul id=\"favourites-list\">
+<li>
+<br>
+</li>
+</ul>

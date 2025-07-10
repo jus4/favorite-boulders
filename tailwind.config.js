@@ -7,9 +7,24 @@ module.exports = {
     "./tmpl/**/*.{html,tmpl}"],
   theme: {
     container: {
-      center: true
+      center: true,
+      padding: '2rem',
     },
-    extend: {},
+    colors: {
+      gray: '#c3c3c3',
+      white: '#ffffff',
+      'dark-charkol': '#222831',
+      'light-gray': '#393E46',
+      primaryCyan: '#00ADB5',
+      'light-white': '#EEEEEE'
+    },
+    extend: {
+      fontFamily: {
+        nunito: ['"Nunito Regular"', 'sans-serif'],
+        'nunito-bold': ['"Nunito Bold"', 'sans-serif'],
+        'nunito-light': ['"Nunito Light"', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
 }
