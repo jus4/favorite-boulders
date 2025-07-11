@@ -122,7 +122,7 @@ func GetRoutesBySectorId(c echo.Context) error {
 func FetchRoutesByName(keyword string) ([]queries.GetRoutesByNameRow, error)  {
   err := godotenv.Load()
   if err != nil {
-    log.Fatal("Error loading .env file")
+    log.Print("Error loading .env file")
   }
   conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
   if err != nil {

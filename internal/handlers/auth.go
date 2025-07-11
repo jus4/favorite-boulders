@@ -39,7 +39,7 @@ func getAuthConfig() *oauth2.Config {
 func OauthGoogleLogin(c echo.Context) error {
   err := godotenv.Load()
   if err != nil {
-    log.Fatal("Error loading .env file")
+    log.Print("Error loading .env file")
   }
 
   googleOauthConfig := getAuthConfig()
@@ -66,7 +66,7 @@ func generateStateOauthCookie(ctx echo.Context) string {
 func OauthGoogleCallback(c echo.Context) error  {
   err := godotenv.Load()
   if err != nil {
-    log.Fatal("Error loading .env file")
+    log.Print("Error loading .env file")
   }
 	// Read oauthState from Cookie
 	oauthState, _ := c.Cookie("oauthstate")
