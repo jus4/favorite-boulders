@@ -21,7 +21,7 @@ COPY --from=builder /app/main .
 # Copy static assets
 COPY --from=builder /app/static ./static
 
-COPY .env .
+# COPY .env .
 
 # Expose port (optional, based on your app)
 EXPOSE 8080
