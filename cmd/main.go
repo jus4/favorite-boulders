@@ -46,5 +46,14 @@ func main() {
   e.GET("/api/routes-by-sector/:id", handlers.GetRoutesBySectorId)
   e.GET("/favourite-climbs/", handlers.FavouriteLists)
   e.Static("/static", "static") 
-	e.Logger.Fatal(e.Start(":1323"))
+
+
+  // Start the app
+  port := os.Getenv("PORT")
+  if port == "" {
+      port = "8080"
+  }
+
+  e.Logger.Fatal(e.Start(":" + port))
+
 }
