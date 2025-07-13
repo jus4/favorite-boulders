@@ -132,9 +132,9 @@ class TerrainMap {
       source: vectorSource,
       style: new ol.style.Style({
         image: new ol.style.Circle({
-          radius: 6,
+          radius: 7,
           fill: new ol.style.Fill({ color: 'blue' }),
-          stroke: new ol.style.Stroke({ color: 'white', width: 2 })
+          stroke: new ol.style.Stroke({ color: 'white', width: 1 })
         })
       })
     });
