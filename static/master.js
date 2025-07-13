@@ -9,7 +9,7 @@
     sectorInfoContent;
     closeSectorRouteInfo;
     constructor() {
-      this.getSectorsUrl = "/api/get-sectors";
+      this.getSectorsUrl = "/api/get-sectors/";
       this.getRoutesBySectorId = "/api/routes-by-sector/";
       this.routeInfoVisible = false;
       this.sectorInfoContainer = document.getElementById("sector-route-info");
@@ -128,7 +128,7 @@
         source: vectorSource,
         style: new ol.style.Style({
           image: new ol.style.Circle({
-            radius: 7,
+            radius: 5,
             fill: new ol.style.Fill({ color: "blue" }),
             stroke: new ol.style.Stroke({ color: "white", width: 1 })
           })
@@ -201,7 +201,7 @@
         })
       });
       map.on("singleclick", async (evt) => {
-        const feature = map.forEachFeatureAtPixel(evt.pixel, (f) => f);
+        const feature = map.forEachFeatureAtPixel(evt.pixel, (f) => f, { hitTolerance: 10 });
         if (feature && popupContent && sectorRouteList) {
           const coordinates = feature.getGeometry().getCoordinates();
           const name = feature.get("name");
@@ -222,9 +222,7 @@
       });
       const layerSwitcher = new ol.control.LayerSwitcher({
         tipLabel: "Layers",
-        // Tooltip
         groupSelectStyle: "children"
-        // Show individual base layers
       });
       map.addControl(layerSwitcher);
       map.addOverlay(overlay);
