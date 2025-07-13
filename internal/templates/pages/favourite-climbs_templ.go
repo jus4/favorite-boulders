@@ -36,7 +36,7 @@ func FavouriteClimbs(metadata model.Metadata, contents templ.Component) templ.Co
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"container\"><div class=\"bg-white\"><h1>Favourite Climbs</h1><p>Create sharable lists of your favourite climbs</p><form hx-post=\"/api/favourites-create/\" hx-target=\"#message\" hx-swap=\"innerHTML\"><div class=\"flex flex-col\"><label>Name</label> <input class=\"border\" type=\"text\" name=\"favourites_name\"></div><div class=\"flex flex-col\"><label>Description</label> <textarea class=\"border\" name=\"description\"></textarea></div><div><h2>Selected routes</h2><div id=\"selected-climbs\"></div><ul id=\"selected-climbs-list\"></ul><label>Add routes</label> <input id=\"favourites-searh-input\" type=\"search\" class=\"relative p-2 border rounded-sm w-full\" name=\"route-search\" placeholder=\"Search for a climb\" hx-post=\"/api/search-route/\" hx-trigger=\"input changed delay:500ms\" hx-target=\"#favourites-selection\"><div id=\"favourites-selection\" class=\"relative z-30\"></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -46,7 +46,7 @@ func FavouriteClimbs(metadata model.Metadata, contents templ.Component) templ.Co
 					templ_7745c5c3_Buffer = templ.GetBuffer()
 					defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 				}
-				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\n                document.body.addEventListener('htmx:afterSwap', function(evt) {\n                    if (evt.target.id === \"favourites-selection\") {\n                      attachListeners();\n                    }\n                });\n\n                // const routeSearchInput = document.getElementById(\"favourites-searh-input\");\n                // if (routeSearchInput) {\n                //   routeSearchInput.addEventListener(\"blur\", function () {\n                //     const resultBox = document.getElementById('favourites-selection');\n                //     resultBox.style.display = 'none'; // or clear content, etc.\n                //   });\n                //   routeSearchInput.addEventListener(\"focus\", function () {\n                //     const resultBox = document.getElementById('favourites-selection');\n                //     resultBox.style.display = 'block'; // or clear content, etc.\n                //   });\n                // }\n\n                document.addEventListener('click', function(event) {\n                  const input = document.getElementById('favourites-searh-input');\n                  const resultBox = document.getElementById('favourites-selection');\n                \n                  if (!input.contains(event.target) && !resultBox.contains(event.target)) {\n                    resultBox.style.display = 'none';\n                  }\n                });\n\n                \n                function addRoute() {\n                  const selectedClimbs = document.getElementById(\"selected-climbs\")\n                  const selectedClimbsList = document.getElementById(\"selected-climbs-list\")\n                  const input = document.createElement(\"input\")\n                  const routeName = document.createElement(\"li\")\n\n                  input.type = \"hidden\"\n                  input.name = \"selected_climbs[]\";\n                  input.value = this.dataset.id;\n\n                  routeName.innerHTML = this.dataset.name\n\n                  selectedClimbs.appendChild(input)\n                  selectedClimbsList.appendChild(routeName)\n\n                }\n\n                function attachListeners() {\n                  document.querySelectorAll('.add-route-btn').forEach(btn => {\n                      btn.addEventListener('click', addRoute)\n                  });\n                }\n              </script>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -59,7 +59,7 @@ func FavouriteClimbs(metadata model.Metadata, contents templ.Component) templ.Co
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><button>Save list</button><div id=\"message\"></div></form>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -69,7 +69,7 @@ func FavouriteClimbs(metadata model.Metadata, contents templ.Component) templ.Co
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
