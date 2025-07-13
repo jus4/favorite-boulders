@@ -34,7 +34,7 @@ func FrontPage(metadata model.Metadata, contents templ.Component) templ.Componen
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"bg-white\"><div id=\"map\" class=\"relative w-full h-[calc(100vh-90px)] md:h-full\"><div id=\"popup\" class=\"ol-popup\"><div id=\"popup-content\"></div></div><div id=\"sector-info\" class=\"hidden absolute bottom-0 h-1/3 md:h-full w-full md:w-[400px] z-20 bg-dark-charkol right-[0] overflow-hidden\"><div class=\"sector-route-list h-full overflow-scroll\"></div><div id=\"sector-route-info\" class=\"absolute top-0 bg-dark-charkol h-full w-full overflow-scroll hidden\"><button id=\"close-route-info-btn\" class=\"ml-8 mt-4 text-white\">Takaisin > </button><div id=\"sector-route-info-content\"></div></div></div></div>")
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -44,7 +44,7 @@ func FrontPage(metadata model.Metadata, contents templ.Component) templ.Componen
 					return templ_7745c5c3_Err
 				}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
