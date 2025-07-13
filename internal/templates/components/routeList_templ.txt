@@ -1,0 +1,24 @@
+<ul>
+<li class=\"py-2 px-4\"><span>
+</span> <span class=\"px-2\">|</span> <span>
+</span></li>
+</ul>
+<div class=\"bg-light-gray\"><h2 class=\"text-light-white px-8 py-4\">
+</h2><ul>
+<li class=\"py-1 text-white border-b border-dark-charkol px-8 py-4\"><div class=\"flex w-full justify-between\"><div class=\"flex flex-col\"><div>
+</div><span>
+</span></div><button data-route-id=\"
+\" class=\"border js-route-info-btn\">></button></div></li>
+</ul><div id=\"climb-information-container\" class=\"absolute top-0 w-full h-full bg-white border hidden\">
+<div data-route-info=\"
+\"><h3 class=\"text-white font-bold py-4 px-8\">
+</h3><div><img src=\"https://placehold.co/600x800\"></div></div>
+</div></div>
+<input type=\"hidden\" name=\"routes_include\"><ul class=\"absolute top-0 left-0 border w-full z-30 bg-white\">
+<li>
+ - 
+ | 
+ <button data-name=\"
+\" data-id=\"
+\" type=\"button\" class=\"add-route-btn\">Add to list</button></li>
+</ul>
