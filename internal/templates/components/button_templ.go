@@ -10,7 +10,9 @@ import "context"
 import "io"
 import "bytes"
 
-func Button() templ.Component {
+var quickSearchHandle = templ.NewOnceHandle()
+
+func QuickSearchButton(isMobile bool) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -23,11 +25,58 @@ func Button() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
+		if isMobile {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button id=\"show-quick-search-btn-mobile\" class=\"h-[30px] border px-2 flex items-center rounded-lg\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templ_7745c5c3_Var1.Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		} else {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button id=\"show-quick-search-btn\" class=\"border py-2 px-4 rounded-lg\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templ_7745c5c3_Var1.Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		if !templ_7745c5c3_IsBuffer {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteTo(templ_7745c5c3_W)
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func Button() templ.Component {
+	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
+		if !templ_7745c5c3_IsBuffer {
+			templ_7745c5c3_Buffer = templ.GetBuffer()
+			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var2 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var2 == nil {
+			templ_7745c5c3_Var2 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ_7745c5c3_Var1.Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = templ_7745c5c3_Var2.Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -42,9 +91,7 @@ func Button() templ.Component {
 	})
 }
 
-var quickSearchHandle = templ.NewOnceHandle()
-
-func QuickSearchButton() templ.Component {
+func QuickSearchModal() templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -52,30 +99,18 @@ func QuickSearchButton() templ.Component {
 			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var2 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var2 == nil {
-			templ_7745c5c3_Var2 = templ.NopComponent
+		templ_7745c5c3_Var3 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var3 == nil {
+			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button id=\"show-quick-search-btn\" class=\"border py-2 px-4 rounded-lg\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templ_7745c5c3_Var2.Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button><div id=\"quick-search-modal\" class=\"z-50 hs-overlay hs-overlay-open:opacity-100 hs-overlay-open:duration-500 hidden size-full fixed top-30 start-0 z-80 opacity-0 overflow-x-hidden transition-all overflow-y-auto pointer-events-none\" role=\"dialog\" tabindex=\"-1\" aria-labelledby=\"hs-basic-modal-label\"><div class=\"bg-white sm:max-w-3xl sm:w-full m-3 sm:mx-auto\"><div class=\"flex flex-col bg-white border border-gray-200 shadow-2xs rounded-xl pointer-events-auto dark:bg-neutral-800 dark:border-neutral-700 dark:shadow-neutral-700/70\"><div class=\"flex justify-between items-center py-3 px-4 border-b border-gray-200 dark:border-neutral-700\"><input id=\"route-search-input\" class=\"p-4 border rounded-sm w-full\" type=\"search\" name=\"route-search\" placeholder=\"Search for a climb\" hx-post=\"/api/get-routes/\" hx-trigger=\"input changed delay:500ms, keyup[key==&#39;Enter&#39;], load\" hx-target=\"#route-results\"> <button onclick=\"hideModal()\" type=\"button\" class=\"size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-hidden focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-700 dark:hover:bg-neutral-600 dark:text-neutral-400 dark:focus:bg-neutral-600\" aria-label=\"Close\" data-hs-overlay=\"#hs-basic-modal\"><span class=\"sr-only\">Close</span> <svg class=\"shrink-0 size-4\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M18 6 6 18\"></path> <path d=\"m6 6 12 12\"></path></svg></button></div><div class=\"p-4 overflow-y-auto\"><div id=\"route-results\"></div></div></div></div></div>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Var3 := templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_Var4 := templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 			if !templ_7745c5c3_IsBuffer {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\n      class QuickSearchModal {\n        constructor(){\n          this.showModalBtn = document.getElementById('show-quick-search-btn')\n          this.showModalBtn = document.getElementById('show-quick-search-btn')\n          this.modal = document.getElementById('quick-search-modal')\n          this.modalInput = document.getElementById('route-search-input')\n          this.modalOpen = false\n          this.openModal = this.openModal.bind(this)\n          this.hideModal = this.hideModal.bind(this)\n        }\n\n        openModal(){\n          this.modal.classList.remove('hidden', 'opacity-0')\n          this.modalOpen = true\n          this.modalInput.focus()\n        }\n\n        hideModal(){\n          this.modal.classList.add('hidden', 'opacity-0')\n          this.modalOpen = false\n        }\n\n        handleShowModalBtw() {\n          if (this.modalOpen) {\n            this.hideModal()\n          } else {\n            this.openModal()\n          }\n        }\n\n        initEventListeners() {\n          this.showModalBtn.addEventListener('click', this.handleShowModalBtw.bind(this))\n          document.addEventListener('keydown', function(event) {\n            if (event.ctrlKey && event.key === 'k') {\n              event.preventDefault();\n              this.openModal()\n            }\n          }.bind(this));\n          document.addEventListener('keydown', function(event) {\n            if (event.key === 'Escape') {\n              event.preventDefault();\n              this.hideModal()\n            }\n          }.bind(this));\n        }\n      }\n      const initQuickSearch = new QuickSearchModal()\n      initQuickSearch.initEventListeners()\n    </script>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"quick-search-modal\" class=\"z-50 absolute top-[5vh] md:top-[10vh] hs-overlay hs-overlay-open:opacity-100 hs-overlay-open:duration-500 hidden w-full h-auto start-0 z-80 opacity-0 overflow-x-hidden transition-all overflow-y-auto pointer-events-none\" role=\"dialog\" tabindex=\"-1\" aria-labelledby=\"hs-basic-modal-label\"><div class=\"sm:max-w-3xl sm:w-full m-3 sm:mx-auto\"><div class=\"flex flex-col bg-white border border-gray-200 shadow-2xs rounded-xl pointer-events-auto dark:bg-neutral-800 dark:border-neutral-700 dark:shadow-neutral-700/70\"><div class=\"flex justify-between items-center py-3 px-4 border-b border-gray-200 dark:border-neutral-700\"><input id=\"route-search-input\" class=\"p-4 border rounded-sm w-full\" type=\"search\" name=\"route-search\" placeholder=\"Search for a climb\" hx-post=\"/api/get-routes/\" hx-trigger=\"input changed delay:500ms, keyup[key==&#39;Enter&#39;], load\" hx-target=\"#route-results\"> <button onclick=\"hideModal()\" type=\"button\" class=\"size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-hidden focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-700 dark:hover:bg-neutral-600 dark:text-neutral-400 dark:focus:bg-neutral-600\" aria-label=\"Close\" data-hs-overlay=\"#hs-basic-modal\"><span class=\"sr-only\">Close</span> <svg class=\"shrink-0 size-4\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M18 6 6 18\"></path> <path d=\"m6 6 12 12\"></path></svg></button></div><div class=\"p-4 overflow-y-auto\"><div id=\"route-results\"></div></div></div></div></div><script>\n      class QuickSearchModal {\n        constructor(){\n          this.showModalBtn = document.getElementById('show-quick-search-btn')\n          this.showModalBtnMobile = document.getElementById('show-quick-search-btn-mobile')\n          this.modal = document.getElementById('quick-search-modal')\n          this.modalInput = document.getElementById('route-search-input')\n          this.modalOpen = false\n          this.openModal = this.openModal.bind(this)\n          this.hideModal = this.hideModal.bind(this)\n        }\n\n        openModal(){\n          this.modal.classList.remove('hidden', 'opacity-0')\n          this.modalOpen = true\n          this.modalInput.focus()\n        }\n\n        hideModal(){\n          this.modal.classList.add('hidden', 'opacity-0')\n          this.modalOpen = false\n        }\n\n        handleShowModalBtw() {\n          if (this.modalOpen) {\n            this.hideModal()\n          } else {\n            this.openModal()\n          }\n        }\n\n        initEventListeners() {\n          this.showModalBtn.addEventListener('click', this.handleShowModalBtw.bind(this))\n          this.showModalBtnMobile.addEventListener('click', this.handleShowModalBtw.bind(this))\n\n          document.addEventListener('keydown', function(event) {\n            if (event.ctrlKey && event.key === 'k') {\n              event.preventDefault();\n              this.openModal()\n            }\n          }.bind(this));\n\n          document.addEventListener('keydown', function(event) {\n            if (event.key === 'Escape') {\n              event.preventDefault();\n              this.hideModal()\n            }\n          }.bind(this));\n        }\n      }\n\n      document.addEventListener(\"DOMContentLoaded\", () => {\n        const initQuickSearch = new QuickSearchModal()\n        initQuickSearch.initEventListeners()\n        console.log(\"Hello World!\");\n      });\n    </script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -84,7 +119,7 @@ func QuickSearchButton() templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = quickSearchHandle.Once().Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = quickSearchHandle.Once().Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

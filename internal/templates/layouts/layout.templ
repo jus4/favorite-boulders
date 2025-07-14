@@ -39,6 +39,7 @@ templ Layout(metadata model.Metadata, children...templ.Component) {
         <main id="main">
           { children... }
         </main>
+        @components.QuickSearchModal()
     </body>
   </html>
 }

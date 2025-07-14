@@ -8,7 +8,10 @@ module.exports = {
   theme: {
     container: {
       center: true,
-      padding: '2rem',
+      padding: {
+        DEFAULT: '1rem',
+        sm: '2rem',
+      },
     },
     colors: {
       gray: '#c3c3c3',
