@@ -26,9 +26,9 @@ func main() {
   e.GET("/auth/logout", handlers.Logout)
   e.GET("/proxy/wmts/*", func(c echo.Context) error {
 	  tilePath := c.Param("*")
-
+    mapApiKey := os.Getenv("MAP_API_KEY")
 	  // Construct full upstream URL
-	  targetURL := "https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/" + tilePath + "?api-key=8717d852-4a37-4bd1-a284-83854ffa2478"
+	  targetURL := "https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/" + tilePath + "?api-key=" + mapApiKey
 
 	  // Forward the request
 	  resp, err := http.Get(targetURL)
