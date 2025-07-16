@@ -82,7 +82,7 @@ func Layout(metadata model.Metadata, children ...templ.Component) templ.Componen
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></script><script src=\"https://unpkg.com/htmx.org@2.0.3\"></script><script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js\"></script><script src=\"https://cdn.jsdelivr.net/npm/proj4@2.11.0/dist/proj4.js\"></script><script src=\"https://cdn.jsdelivr.net/npm/ol@v10.5.0/dist/ol.js\"></script><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/ol-layerswitcher@4.1.1/dist/ol-layerswitcher.css\"><script src=\"https://cdn.jsdelivr.net/npm/ol-layerswitcher@4.1.1/dist/ol-layerswitcher.js\"></script><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/ol@v10.5.0/ol.css\"><link rel=\"stylesheet\" href=\"http://www.openlayers.org/api/theme/default/style.css\"></head><body>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></script><script src=\"https://unpkg.com/htmx.org@2.0.3\"></script><script src=\"https://cdn.jsdelivr.net/npm/proj4@2.11.0/dist/proj4.js\"></script><script src=\"https://cdn.jsdelivr.net/npm/ol@v10.5.0/dist/ol.js\"></script><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/ol-layerswitcher@4.1.1/dist/ol-layerswitcher.css\"><script src=\"https://cdn.jsdelivr.net/npm/ol-layerswitcher@4.1.1/dist/ol-layerswitcher.js\"></script><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/ol@v10.5.0/ol.css\"><link rel=\"stylesheet\" href=\"http://www.openlayers.org/api/theme/default/style.css\"></head><body>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

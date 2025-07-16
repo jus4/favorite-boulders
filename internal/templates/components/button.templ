@@ -22,7 +22,7 @@ templ QuickSearchModal() {
         <div class="flex flex-col bg-white border border-gray-200 shadow-2xs rounded-xl pointer-events-auto dark:bg-neutral-800 dark:border-neutral-700 dark:shadow-neutral-700/70">
           <div class="flex justify-between items-center py-3 px-4 border-b border-gray-200 dark:border-neutral-700">
               <input id="route-search-input" class="p-4 border rounded-sm w-full" type="search"
-                name="route-search" placeholder="Search for a climb"
+                name="route-search" placeholder="Hakusana"
                 hx-post="/api/get-routes/"
                 hx-trigger="input changed delay:500ms, keyup[key=='Enter'], load"
                 hx-target="#route-results"
@@ -95,7 +95,6 @@ templ QuickSearchModal() {
       document.addEventListener("DOMContentLoaded", () => {
         const initQuickSearch = new QuickSearchModal()
         initQuickSearch.initEventListeners()
-        console.log("Hello World!");
       });
     </script>
   }

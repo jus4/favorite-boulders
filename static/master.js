@@ -8,6 +8,10 @@
     sectorInfo;
     sectorInfoContent;
     closeSectorRouteInfo;
+    mapOrtokuvaBtn;
+    mapMaastokarttaBtn;
+    mapZoomInBtn;
+    mapZoomOutBtn;
     constructor() {
       this.getSectorsUrl = "/api/get-sectors/";
       this.getRoutesBySectorId = "/api/routes-by-sector/";
@@ -16,6 +20,10 @@
       this.sectorInfo = document.getElementById("sector-info");
       this.sectorInfoContent = document.getElementById("sector-route-info-content");
       this.closeSectorRouteInfo = document.getElementById("close-route-info-btn");
+      this.mapOrtokuvaBtn = document.getElementById("ortokuva-map-btn");
+      this.mapMaastokarttaBtn = document.getElementById("maastokartta-map-btn");
+      this.mapZoomInBtn = document.getElementById("map-zoom-in-btn");
+      this.mapZoomOutBtn = document.getElementById("map-zoom-out-btn");
       if (!this.sectorInfoContent || !this.sectorInfo || !this.sectorInfoContainer || !this.closeSectorRouteInfo) return;
     }
     async getLocations() {
@@ -27,7 +35,7 @@
         const json = await response.json();
         return json;
       } catch (err) {
-        console.log(err);
+        console.warn(err);
       }
     }
     async getRoutesBySector(id, name) {
@@ -78,6 +86,26 @@
     async init() {
       if (typeof globalThis?.proj4 === "undefined" || typeof globalThis?.ol === "undefined") {
         console.warn("failed to init map");
+      }
+      if (this.mapOrtokuvaBtn && this.mapMaastokarttaBtn) {
+        this.mapOrtokuvaBtn.addEventListener("click", () => {
+          ortokuva.setVisible(true);
+          maastokartta.setVisible(false);
+        });
+        this.mapMaastokarttaBtn.addEventListener("click", () => {
+          ortokuva.setVisible(false);
+          maastokartta.setVisible(true);
+        });
+      }
+      if (this.mapZoomInBtn && this.mapZoomOutBtn) {
+        this.mapZoomInBtn.addEventListener("click", () => {
+          let zoom = view.getZoom();
+          view.setZoom(zoom + 1);
+        });
+        this.mapZoomOutBtn.addEventListener("click", () => {
+          let zoom = view.getZoom();
+          view.setZoom(zoom - 1);
+        });
       }
       const proj4 = globalThis.proj4;
       const ol = globalThis.ol;
@@ -189,16 +217,18 @@
         title: "Base Maps",
         layers: [maastokartta, ortokuva]
       });
+      const view = new ol.View({
+        projection,
+        center: ol.extent.getCenter(extent),
+        zoom: 0,
+        resolutions,
+        extent
+      });
       const map = new ol.Map({
         target: "map",
         layers: [baseLayerGroup],
-        view: new ol.View({
-          projection,
-          center: ol.extent.getCenter(extent),
-          zoom: 0,
-          resolutions,
-          extent
-        })
+        view,
+        controls: []
       });
       map.on("singleclick", async (evt) => {
         const feature = map.forEachFeatureAtPixel(evt.pixel, (f) => f, { hitTolerance: 10 });
@@ -220,11 +250,6 @@
           overlay.setPosition(void 0);
         }
       });
-      const layerSwitcher = new ol.control.LayerSwitcher({
-        tipLabel: "Layers",
-        groupSelectStyle: "children"
-      });
-      map.addControl(layerSwitcher);
       map.addOverlay(overlay);
       map.getView().fit(extent, { size: map.getSize() });
       map.addLayer(vectorLayer);
@@ -234,7 +259,6 @@
 
   // internal/js/master.ts
   document.addEventListener("DOMContentLoaded", function() {
-    console.log("document loaded ready!");
     const newMap = new terrainMap_default();
     newMap.init();
   });

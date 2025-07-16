@@ -6,15 +6,23 @@ class TerrainMap {
   sectorInfo: HTMLElement | null
   sectorInfoContent: HTMLElement | null
   closeSectorRouteInfo: HTMLButtonElement | null
+  mapOrtokuvaBtn: HTMLButtonElement | null
+  mapMaastokarttaBtn: HTMLButtonElement | null
+  mapZoomInBtn: HTMLButtonElement | null
+  mapZoomOutBtn: HTMLButtonElement | null
 
   constructor() {
-    this.getSectorsUrl = '/api/get-sectors'
+    this.getSectorsUrl = '/api/get-sectors/'
     this.getRoutesBySectorId = '/api/routes-by-sector/'
     this.routeInfoVisible = false
     this.sectorInfoContainer = document.getElementById('sector-route-info')
     this.sectorInfo = document.getElementById('sector-info')
     this.sectorInfoContent = document.getElementById('sector-route-info-content')
     this.closeSectorRouteInfo = document.getElementById('close-route-info-btn') as HTMLButtonElement | null
+    this.mapOrtokuvaBtn = document.getElementById('ortokuva-map-btn') as HTMLButtonElement | null
+    this.mapMaastokarttaBtn = document.getElementById('maastokartta-map-btn') as HTMLButtonElement | null
+    this.mapZoomInBtn = document.getElementById('map-zoom-in-btn') as HTMLButtonElement | null
+    this.mapZoomOutBtn = document.getElementById('map-zoom-out-btn') as HTMLButtonElement | null
     
     if (!this.sectorInfoContent || !this.sectorInfo || !this.sectorInfoContainer || !this.closeSectorRouteInfo ) return
   }
@@ -28,7 +36,7 @@ class TerrainMap {
       const json = await response.json();
       return json
     } catch(err) {
-      console.log(err)
+      console.warn(err)
     }
   }
 
@@ -89,6 +97,34 @@ class TerrainMap {
     if ( typeof globalThis?.proj4 === 'undefined' || typeof globalThis?.ol === 'undefined') {
       console.warn('failed to init map')
     }
+
+    // init map layer switching
+    if (this.mapOrtokuvaBtn && this.mapMaastokarttaBtn) {
+      this.mapOrtokuvaBtn.addEventListener('click', () => {
+        ortokuva.setVisible(true)
+        maastokartta.setVisible(false)
+      })
+      this.mapMaastokarttaBtn.addEventListener('click', () => {
+        ortokuva.setVisible(false)
+        maastokartta.setVisible(true)
+      })
+    }
+
+    // init custom zoom buttons 
+    if (this.mapZoomInBtn && this.mapZoomOutBtn) {
+      this.mapZoomInBtn.addEventListener('click', () => {
+        let zoom = view.getZoom();
+        view.setZoom(zoom + 1);
+      })
+
+      this.mapZoomOutBtn.addEventListener('click', () => {
+        let zoom = view.getZoom();
+        view.setZoom(zoom - 1);
+      })
+
+    }
+
+
     const proj4 = globalThis.proj4
     const ol = globalThis.ol
 
@@ -132,7 +168,7 @@ class TerrainMap {
       source: vectorSource,
       style: new ol.style.Style({
         image: new ol.style.Circle({
-          radius: 7,
+          radius: 5,
           fill: new ol.style.Fill({ color: 'blue' }),
           stroke: new ol.style.Stroke({ color: 'white', width: 1 })
         })
@@ -200,22 +236,25 @@ class TerrainMap {
       layers: [maastokartta, ortokuva]
     });
 
+    const view = new ol.View({
+      projection: projection,
+      center: ol.extent.getCenter(extent),
+      zoom: 0,
+      resolutions: resolutions,
+      extent: extent
+    })
 
     const map = new ol.Map({
       target: 'map',
       layers: [baseLayerGroup],
-      view: new ol.View({
-        projection: projection,
-        center: ol.extent.getCenter(extent),
-        zoom: 0,
-        resolutions: resolutions,
-        extent: extent
-      })
+      view: view,
+      controls: [],
     });
+
 
     // Show popup on click
     map.on('singleclick', async (evt) => {
-      const feature = map.forEachFeatureAtPixel(evt.pixel, f => f);
+      const feature = map.forEachFeatureAtPixel(evt.pixel, f => f, { hitTolerance: 10 });
       if (feature && popupContent && sectorRouteList ) {
         const coordinates = feature.getGeometry().getCoordinates();
         const name = feature.get('name');
@@ -235,12 +274,6 @@ class TerrainMap {
       }
     });
 
-    // Add layer switcher control
-    const layerSwitcher = new ol.control.LayerSwitcher({
-      tipLabel: 'Layers', // Tooltip
-      groupSelectStyle: 'children' // Show individual base layers
-    });
-    map.addControl(layerSwitcher);
     map.addOverlay(overlay);
     map.getView().fit(extent, { size: map.getSize() });
     map.addLayer(vectorLayer);

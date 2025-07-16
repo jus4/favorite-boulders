@@ -9,7 +9,7 @@ templ Header() {
     if user := middleware.GetUserID(ctx); user.OK {
       <div class="w-full bg-gray py-2"> 
         <div class="container flex justify-end items-center">
-          <a href="/auth/logout">Logout</a><span class="mx-2">|</span>{user.ID}
+          <a href="/auth/logout">Kirjaudu ulos</a><span class="mx-2">|</span>{user.ID}
         </div>
       </div>
     }
@@ -22,16 +22,14 @@ templ Header() {
           <ul class="items-center gap-6 hidden md:flex">
             <li>
               @QuickSearchButton(false) {
-                Search ctrl k
+                Haku ctrl k
               }
             </li>
-            <li>Map</li>
             if user := middleware.GetUserID(ctx); user.OK {
               <li><a href="/favourite-climbs/" data={user.ID}>Favourite climbs</a></li>
             } else {
-              <li><a href="/auth/google/login">login</a></li>
+              <li><a href="/auth/google/login">Kirjaudu</a></li>
             }
-            <li>About</li>
           </ul>
           <div class="flex gap-4 md:hidden">
               @QuickSearchButton(true) {
