@@ -11,7 +11,7 @@ COPY . .
 
 RUN go build -o main ./cmd
 
-FROM alpine:latest
+FROM alpine:latest AS app
 
 WORKDIR /root/
 
@@ -20,8 +20,6 @@ COPY --from=builder /app/main .
 
 # Copy static assets
 COPY --from=builder /app/static ./static
-
-# COPY .env .
 
 # Expose port (optional, based on your app)
 EXPOSE 8080
