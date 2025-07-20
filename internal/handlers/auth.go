@@ -6,18 +6,18 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/joho/godotenv"
-	"github.com/jus4/favorite-boulders/internal/model"
-	"github.com/labstack/echo-contrib/session"
-	"github.com/labstack/echo/v4"
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/google"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jus4/favorite-boulders/internal/model"
+	"github.com/labstack/echo-contrib/session"
+	"github.com/labstack/echo/v4"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
 )
 
 const oauthGoogleUrlAPI = "https://www.googleapis.com/oauth2/v2/userinfo?access_token="
@@ -35,10 +35,6 @@ func getAuthConfig() *oauth2.Config {
 }
 
 func OauthGoogleLogin(c echo.Context) error {
-	err := godotenv.Load()
-	if err != nil {
-		log.Print("Error loading .env file")
-	}
 
 	googleOauthConfig := getAuthConfig()
 
@@ -61,10 +57,6 @@ func generateStateOauthCookie(ctx echo.Context) string {
 }
 
 func OauthGoogleCallback(c echo.Context) error {
-	err := godotenv.Load()
-	if err != nil {
-		log.Print("Error loading .env file")
-	}
 	// Read oauthState from Cookie
 	oauthState, _ := c.Cookie("oauthstate")
 

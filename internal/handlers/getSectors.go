@@ -3,20 +3,15 @@ package handlers
 import (
 	"context"
 	"fmt"
-	"github.com/jackc/pgx/v5"
-	"github.com/joho/godotenv"
-	"github.com/jus4/favorite-boulders/internal/store/queries"
-	"github.com/labstack/echo/v4"
-	"log"
 	"net/http"
 	"os"
+
+	"github.com/jackc/pgx/v5"
+	"github.com/jus4/favorite-boulders/internal/store/queries"
+	"github.com/labstack/echo/v4"
 )
 
 func GetSectors(c echo.Context) error {
-	err := godotenv.Load()
-	if err != nil {
-		log.Print("Error loading .env file")
-	}
 	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)

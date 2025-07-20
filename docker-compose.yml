@@ -1,0 +1,38 @@
+x-env:
+  env_files:
+    dev:
+      - &db envs/db.env
+      - &app envs/app.env
+
+services:
+  db:
+    image: postgres:17
+    env_file:
+      - *db
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-d", "topos", "-U", "postgres" ]
+      timeout: 5s
+      interval: 5s
+      retries: 5
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db/initdb/:/docker-entrypoint-initdb.d/
+      - ./db/dump/:/mnt/dump/
+      - dbdata:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      target: app
+    image: app
+    env_file:
+      - *app
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+
+volumes:
+  dbdata:
+

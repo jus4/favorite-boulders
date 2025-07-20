@@ -1,22 +1,17 @@
 package main
 
 import (
+	"net/http"
+	"os"
+
 	"github.com/gorilla/sessions"
-	"github.com/joho/godotenv"
 	"github.com/jus4/favorite-boulders/internal/handlers"
 	"github.com/jus4/favorite-boulders/internal/middleware"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
-	"log"
-	"net/http"
-	"os"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Print("Error loading .env file")
-	}
 	e := echo.New()
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv("SECRET_KEY")))))
 	e.Use(middleware.AuthMiddleware)

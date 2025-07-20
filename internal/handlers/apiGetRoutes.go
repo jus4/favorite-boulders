@@ -3,19 +3,18 @@ package handlers
 import (
 	"context"
 	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"strconv"
+
 	"github.com/a-h/templ"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
-	"github.com/joho/godotenv"
 	"github.com/jus4/favorite-boulders/internal/helpers"
 	"github.com/jus4/favorite-boulders/internal/store/queries"
 	"github.com/jus4/favorite-boulders/internal/templates/components"
 	"github.com/labstack/echo/v4"
-	"io"
-	"log"
-	"net/http"
-	"os"
-	"strconv"
 )
 
 var noResultsFound = templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
@@ -115,10 +114,6 @@ func GetRoutesBySectorId(c echo.Context) error {
 }
 
 func FetchRoutesByName(keyword string) ([]queries.GetRoutesByNameRow, error) {
-	err := godotenv.Load()
-	if err != nil {
-		log.Print("Error loading .env file")
-	}
 	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
