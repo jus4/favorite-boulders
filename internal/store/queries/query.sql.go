@@ -231,7 +231,8 @@ SELECT
   s.longitude,
   s.name,
   s.sector_id,
-  c.name as crag_name
+  c.name as crag_name,
+  c.crag_id as crag_id
 FROM sector AS s 
 INNER JOIN crag AS c 
   on s.crag_id = c.crag_id 
@@ -246,6 +247,7 @@ type GetSectorsRow struct {
 	Name      pgtype.Text   `json:"name"`
 	SectorID  int64         `json:"sector_id"`
 	CragName  pgtype.Text   `json:"crag_name"`
+	CragID    int64         `json:"crag_id"`
 }
 
 func (q *Queries) GetSectors(ctx context.Context) ([]GetSectorsRow, error) {
@@ -263,6 +265,7 @@ func (q *Queries) GetSectors(ctx context.Context) ([]GetSectorsRow, error) {
 			&i.Name,
 			&i.SectorID,
 			&i.CragName,
+			&i.CragID,
 		); err != nil {
 			return nil, err
 		}

@@ -1,3 +1,7 @@
+import mapLayers from "./mapLayers"
+import proj4Config from "./proj4Config"
+import sectors from "./sectors"
+
 class TerrainMap {
   getSectorsUrl: string
   getRoutesBySectorId: string
@@ -10,8 +14,27 @@ class TerrainMap {
   mapMaastokarttaBtn: HTMLButtonElement | null
   mapZoomInBtn: HTMLButtonElement | null
   mapZoomOutBtn: HTMLButtonElement | null
+  userLocationBtn: HTMLButtonElement | null
+  ol: any
+  // proj4jConfig: () => {projection: any, extent:any, resolutions: any, matrixIds: any}
+  mapLayers: {ortokuva: any, maastokartta: any}
+  view: any
+  map: any
+  baseLayerGroup: any
+  proj4: any
+  userLocationStyle: any
+  userLocationLayer: any
+  sectorElements: {
+    popup: HTMLElement | null
+    popupContent: HTMLElement | null
+    sectorInfo: HTMLElement | null
+    sectorRouteList: HTMLElement | null
+  }
+  sectorOverlay: any
 
   constructor() {
+    this.ol =  globalThis.ol
+
     this.getSectorsUrl = '/api/get-sectors/'
     this.getRoutesBySectorId = '/api/routes-by-sector/'
     this.routeInfoVisible = false
@@ -23,21 +46,62 @@ class TerrainMap {
     this.mapMaastokarttaBtn = document.getElementById('maastokartta-map-btn') as HTMLButtonElement | null
     this.mapZoomInBtn = document.getElementById('map-zoom-in-btn') as HTMLButtonElement | null
     this.mapZoomOutBtn = document.getElementById('map-zoom-out-btn') as HTMLButtonElement | null
+    this.userLocationBtn = document.getElementById('user-loc-btn') as HTMLButtonElement | null
+
+    this.sectorElements = {
+      popup: document.getElementById('popup'),
+      popupContent:document.getElementById('popup-content'),
+      sectorInfo: document.getElementById('sector-info'),
+      sectorRouteList: document.querySelector('.sector-route-list') as HTMLElement
+    }
+
+    this.sectorOverlay = new this.ol.Overlay({
+      element: this.sectorElements.popup,
+      autoPan: true,
+      autoPanAnimation: {
+        duration: 250
+      }
+    })
+
+    this.mapLayers = mapLayers()
+    this.baseLayerGroup = new this.ol.layer.Group({
+      title: 'Base Maps',
+      layers: [this.mapLayers.maastokartta, this.mapLayers.ortokuva]
+    });
+    this.view = new this.ol.View({
+      projection: proj4Config.projection,
+      center: this.ol.extent.getCenter(proj4Config.extent),
+      zoom: 0,
+      resolutions: proj4Config.resolutions,
+      extent: proj4Config.extent
+    })
+    this.map = new this.ol.Map({
+      target: 'map',
+      layers: [this.baseLayerGroup],
+      view: this.view,
+      controls: [],
+    });
+
+    // Style for the user location marker
+    this.userLocationStyle = new this.ol.style.Style({
+      image: new this.ol.style.Circle({
+        radius: 10,
+        fill: new this.ol.style.Fill({ color: 'red' }),
+        stroke: new this.ol.style.Stroke({ color: 'white', width: 2 })
+      })
+    });
+
+    // Vector layer to show the user's location
+    this.userLocationLayer = new this.ol.layer.Vector({
+      source: new this.ol.source.Vector()
+    });
+
+
+    this.proj4 = globalThis.proj4
+    this.proj4.defs("EPSG:3067", "+proj=utm +zone=35 +ellps=GRS80 +units=m +no_defs");
+    this.ol.proj.proj4.register(this.proj4);
     
     if (!this.sectorInfoContent || !this.sectorInfo || !this.sectorInfoContainer || !this.closeSectorRouteInfo ) return
-  }
-
-  async getLocations() {
-    try {
-      const response = await fetch(this.getSectorsUrl)
-      if (!response.ok) {
-        throw new Error('Fetch error')
-      }
-      const json = await response.json();
-      return json
-    } catch(err) {
-      console.warn(err)
-    }
   }
 
   async getRoutesBySector(id:string, name: string) {
@@ -93,190 +157,103 @@ class TerrainMap {
     }
   }
 
-  async init() {
-    if ( typeof globalThis?.proj4 === 'undefined' || typeof globalThis?.ol === 'undefined') {
-      console.warn('failed to init map')
+  async handleSectorClick(evt) {
+    const feature = this.map.forEachFeatureAtPixel(evt.pixel, f => f, { hitTolerance: 10 });
+    console.log(this.sectorElements)
+    if (feature && this.sectorElements.popupContent && this.sectorElements.sectorRouteList ) {
+      const coordinates = feature.getGeometry().getCoordinates();
+      const name = feature.get('name');
+      const sectorId = feature.get('sectorId');
+      const cragName = feature.get('cragName');
+      const resultHtml = await this.getRoutesBySector(sectorId, name)
+      this.cleanRoutButtonEventListers()
+      this.hideRouteInfo()
+      this.sectorElements.sectorRouteList.innerHTML = resultHtml || ''
+      this.initRouteButtonEventListeners()
+      this.sectorElements.popupContent.innerHTML = `<strong>${cragName}<br/>${name}</strong>`;
+      this.sectorElements.sectorInfo?.classList.remove('hidden')
+      this.sectorOverlay.setPosition(coordinates);
+    } else {
+      this.sectorElements.sectorInfo?.classList.add('hidden')
+      this.sectorOverlay.setPosition(undefined); // Hide popup
     }
 
-    // init map layer switching
+  }
+
+  setMapLocation(longitude:number, latitude:number) {
+    const transformed = this.ol.proj.transform([longitude, latitude], 'EPSG:4326', 'EPSG:3067');
+    this.map.getView().setCenter(transformed)
+    this.map.getView().setZoom(8)
+  }
+
+  showUserLocation(position) {
+    const { latitude, longitude } = position.coords;
+
+    // EPSG:4326 (WGS84) to EPSG:3067 (e.g. Finnish national grid)
+    const transformed = this.ol.proj.transform([longitude, latitude], 'EPSG:4326', 'EPSG:3067');
+
+    const userFeature = new this.ol.Feature(new this.ol.geom.Point(transformed));
+    userFeature.setStyle(this.userLocationStyle);
+
+    this.userLocationLayer.getSource().clear();
+    this.userLocationLayer.getSource().addFeature(userFeature);
+    this.setMapLocation(longitude, latitude)
+
+  }
+
+  topMenuEventListeners() {
     if (this.mapOrtokuvaBtn && this.mapMaastokarttaBtn) {
       this.mapOrtokuvaBtn.addEventListener('click', () => {
-        ortokuva.setVisible(true)
-        maastokartta.setVisible(false)
+        this.mapLayers.ortokuva.setVisible(true)
+        this.mapLayers.maastokartta.setVisible(false)
       })
       this.mapMaastokarttaBtn.addEventListener('click', () => {
-        ortokuva.setVisible(false)
-        maastokartta.setVisible(true)
+        this.mapLayers.ortokuva.setVisible(false)
+        this.mapLayers.maastokartta.setVisible(true)
       })
     }
 
     // init custom zoom buttons 
     if (this.mapZoomInBtn && this.mapZoomOutBtn) {
       this.mapZoomInBtn.addEventListener('click', () => {
-        let zoom = view.getZoom();
-        view.setZoom(zoom + 1);
+        let zoom = this.view.getZoom();
+        this.view.setZoom(zoom + 1);
       })
 
       this.mapZoomOutBtn.addEventListener('click', () => {
-        let zoom = view.getZoom();
-        view.setZoom(zoom - 1);
+        let zoom = this.view.getZoom();
+        this.view.setZoom(zoom - 1);
       })
-
     }
 
-
-    const proj4 = globalThis.proj4
-    const ol = globalThis.ol
-
-    proj4.defs("EPSG:3067", "+proj=utm +zone=35 +ellps=GRS80 +units=m +no_defs");
-    ol.proj.proj4.register(proj4);
-
-    const projection = ol.proj.get('EPSG:3067');
-    const extent = [-548576.000000, 6291456.000000, 1548576.000000, 8388608.000000];
-
-    const resolutions = [
-      8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5
-    ];
-    const matrixIds = resolutions.map((_, i) => i);
-
-    // TODO do this in the backend please
-    const locationsData = await this.getLocations()
-    const locations = locationsData.map((s) => {
-      return {
-        name: s.name,
-        coords: [s.longitude, s.latitude],
-        sectorId: s.sector_id,
-        cragName: s.crag_name,
-      }
-    })
-
-    const features = locations.map(loc => {
-      const transformed = ol.proj.transform(loc.coords, 'EPSG:4326', 'EPSG:3067');
-      return new ol.Feature({
-        geometry: new ol.geom.Point(transformed),
-        name: loc.name,
-        sectorId: loc.sectorId,
-        cragName: loc.cragName,
-      });
-    });
-
-    const vectorSource = new ol.source.Vector({
-      features: features
-    });
-
-    const vectorLayer = new ol.layer.Vector({
-      source: vectorSource,
-      style: new ol.style.Style({
-        image: new ol.style.Circle({
-          radius: 5,
-          fill: new ol.style.Fill({ color: 'blue' }),
-          stroke: new ol.style.Stroke({ color: 'white', width: 1 })
-        })
+    if (this.userLocationBtn) {
+      this.userLocationBtn.addEventListener('click', () => {
+        if ('geolocation' in navigator) {
+          navigator.geolocation.getCurrentPosition(this.showUserLocation.bind(this), () => {}, {
+            enableHighAccuracy: true
+          });
+        } else {
+          alert('Geolocation is not supported by your browser.');
+        }
       })
-    });
+    }
+  }
 
-    const popup = document.getElementById('popup');
-    const popupContent = document.getElementById('popup-content');
-    const sectorInfo = document.getElementById('sector-info')
-    const sectorRouteList = sectorInfo?.querySelector('.sector-route-list')
+  async init() {
+    if ( typeof globalThis?.proj4 === 'undefined' || typeof globalThis?.ol === 'undefined') {
+      console.warn('failed to init map')
+    }
 
-    const overlay = new ol.Overlay({
-      element: popup,
-      autoPan: true,
-      autoPanAnimation: {
-        duration: 250
-      }
-    });
+    this.topMenuEventListeners()
 
-    const maastokartta = new ol.layer.Tile({
-      title: 'Maastokartta',
-      visible: true,
-      type: 'base',
-      source: new ol.source.WMTS({
-        url: '/proxy/wmts/1.0.0/maastokartta/default/ETRS-TM35FIN/{TileMatrix}/{TileRow}/{TileCol}.png',
-        requestEncoding: 'REST',
-        layer: "maastokartta",
-        matrixSet: 'ETRS-TM35FIN',
-        format: 'image/png',
-        projection: projection,
-        tileGrid: new ol.tilegrid.WMTS({
-          origin: ol.extent.getTopLeft(extent),
-          resolutions: resolutions,
-          matrixIds: matrixIds
-        }),
-        style: 'default',
-        wrapX: false
-      })
-    })
+    // Request user location
 
-    const ortokuva = new ol.layer.Tile({
-      title: 'Ortokuva',
-      visible: false,
-      type: 'base',
-      source: new ol.source.WMTS({
-        url: '/proxy/wmts/1.0.0/ortokuva/default/ETRS-TM35FIN/{TileMatrix}/{TileRow}/{TileCol}.png',
-        requestEncoding: 'REST',
-        layer: "ortokuva",
-        matrixSet: 'ETRS-TM35FIN',
-        format: 'image/png',
-        projection: projection,
-        tileGrid: new ol.tilegrid.WMTS({
-          origin: ol.extent.getTopLeft(extent),
-          resolutions: resolutions,
-          matrixIds: matrixIds
-        }),
-        style: 'default',
-        wrapX: false
-      })
-    })
-
-    // Group base layers so layer switcher can treat them as a toggle set
-    const baseLayerGroup = new ol.layer.Group({
-      title: 'Base Maps',
-      layers: [maastokartta, ortokuva]
-    });
-
-    const view = new ol.View({
-      projection: projection,
-      center: ol.extent.getCenter(extent),
-      zoom: 0,
-      resolutions: resolutions,
-      extent: extent
-    })
-
-    const map = new ol.Map({
-      target: 'map',
-      layers: [baseLayerGroup],
-      view: view,
-      controls: [],
-    });
-
-
-    // Show popup on click
-    map.on('singleclick', async (evt) => {
-      const feature = map.forEachFeatureAtPixel(evt.pixel, f => f, { hitTolerance: 10 });
-      if (feature && popupContent && sectorRouteList ) {
-        const coordinates = feature.getGeometry().getCoordinates();
-        const name = feature.get('name');
-        const sectorId = feature.get('sectorId');
-        const cragName = feature.get('cragName');
-        const resultHtml = await this.getRoutesBySector(sectorId, name)
-        this.cleanRoutButtonEventListers()
-        this.hideRouteInfo()
-        sectorRouteList.innerHTML = resultHtml || ''
-        this.initRouteButtonEventListeners()
-        popupContent.innerHTML = `<strong>${cragName}<br/>${name}</strong>`;
-        sectorInfo?.classList.remove('hidden')
-        overlay.setPosition(coordinates);
-      } else {
-        sectorInfo?.classList.add('hidden')
-        overlay.setPosition(undefined); // Hide popup
-      }
-    });
-
-    map.addOverlay(overlay);
-    map.getView().fit(extent, { size: map.getSize() });
-    map.addLayer(vectorLayer);
+    this.map.on('singleclick', this.handleSectorClick.bind(this))
+    const sectorLayer = await sectors
+    this.map.addOverlay(this.sectorOverlay);
+    this.map.getView().fit(proj4Config.extent, { size: this.map.getSize() });
+    this.map.addLayer(sectorLayer);
+    this.map.addLayer(this.userLocationLayer);
 
   }
 }

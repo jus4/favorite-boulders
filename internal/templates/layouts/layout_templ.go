@@ -56,14 +56,14 @@ func Layout(metadata model.Metadata, children ...templ.Component) templ.Componen
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><link href=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><script src=\"https://unpkg.com/htmx.org@2.0.3\"></script><script src=\"https://cdn.jsdelivr.net/npm/proj4@2.11.0/dist/proj4.js\"></script><script src=\"https://cdn.jsdelivr.net/npm/ol@v10.5.0/dist/ol.js\"></script><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/ol-layerswitcher@4.1.1/dist/ol-layerswitcher.css\"><script src=\"https://cdn.jsdelivr.net/npm/ol-layerswitcher@4.1.1/dist/ol-layerswitcher.js\"></script><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/ol@v10.5.0/ol.css\"><link rel=\"stylesheet\" href=\"http://www.openlayers.org/api/theme/default/style.css\"><link href=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(styleSheet)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/layouts/layout.templ`, Line: 24, Col: 29}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/layouts/layout.templ`, Line: 33, Col: 29}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -76,13 +76,13 @@ func Layout(metadata model.Metadata, children ...templ.Component) templ.Componen
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(jsScripts)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/layouts/layout.templ`, Line: 25, Col: 29}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/layouts/layout.templ`, Line: 34, Col: 29}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></script><script src=\"https://unpkg.com/htmx.org@2.0.3\"></script><script src=\"https://cdn.jsdelivr.net/npm/proj4@2.11.0/dist/proj4.js\"></script><script src=\"https://cdn.jsdelivr.net/npm/ol@v10.5.0/dist/ol.js\"></script><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/ol-layerswitcher@4.1.1/dist/ol-layerswitcher.css\"><script src=\"https://cdn.jsdelivr.net/npm/ol-layerswitcher@4.1.1/dist/ol-layerswitcher.js\"></script><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/ol@v10.5.0/ol.css\"><link rel=\"stylesheet\" href=\"http://www.openlayers.org/api/theme/default/style.css\"></head><body>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></script></head><body>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
