@@ -82,8 +82,47 @@ func (q *Queries) GetFavoriteClimbsList(ctx context.Context, owner string) ([]Us
 	return items, nil
 }
 
+const getRouteById = `-- name: GetRouteById :one
+SELECT 
+  r.route_id,
+  r.title,
+  r.grade,
+  r.route_type,
+  r.description,
+  r.images ->> 'main' as image_main,
+  r.images ->> 'thumbnail' as image_thumbnail
+FROM  route as r
+WHERE r.route_id = $1
+LIMIT 1
+`
+
+type GetRouteByIdRow struct {
+	RouteID        int64       `json:"route_id"`
+	Title          pgtype.Text `json:"title"`
+	Grade          pgtype.Text `json:"grade"`
+	RouteType      pgtype.Text `json:"route_type"`
+	Description    pgtype.Text `json:"description"`
+	ImageMain      interface{} `json:"image_main"`
+	ImageThumbnail interface{} `json:"image_thumbnail"`
+}
+
+func (q *Queries) GetRouteById(ctx context.Context, routeID int64) (GetRouteByIdRow, error) {
+	row := q.db.QueryRow(ctx, getRouteById, routeID)
+	var i GetRouteByIdRow
+	err := row.Scan(
+		&i.RouteID,
+		&i.Title,
+		&i.Grade,
+		&i.RouteType,
+		&i.Description,
+		&i.ImageMain,
+		&i.ImageThumbnail,
+	)
+	return i, err
+}
+
 const getRoutes = `-- name: GetRoutes :many
-SELECT route_id, sector_id, crag_id, title, grade, route_type FROM route
+SELECT route_id, sector_id, crag_id, title, grade, route_type, images, description FROM route
 ORDER BY title
 LIMIT 100
 `
@@ -104,6 +143,8 @@ func (q *Queries) GetRoutes(ctx context.Context) ([]Route, error) {
 			&i.Title,
 			&i.Grade,
 			&i.RouteType,
+			&i.Images,
+			&i.Description,
 		); err != nil {
 			return nil, err
 		}
@@ -121,7 +162,8 @@ SELECT
   r.title,
   r.grade,
   c.name as grag_name,
-  s.name as sector_name
+  s.name as sector_name,
+  s.sector_id as sector_id
 FROM route as r
 JOIN 
   sector as s 
@@ -140,7 +182,7 @@ AND
   a.country = 'Finland'
 ORDER
   by r.title
-LIMIT 50
+LIMIT 15
 `
 
 type GetRoutesByNameRow struct {
@@ -149,6 +191,7 @@ type GetRoutesByNameRow struct {
 	Grade      pgtype.Text `json:"grade"`
 	GragName   pgtype.Text `json:"grag_name"`
 	SectorName pgtype.Text `json:"sector_name"`
+	SectorID   int64       `json:"sector_id"`
 }
 
 func (q *Queries) GetRoutesByName(ctx context.Context, title pgtype.Text) ([]GetRoutesByNameRow, error) {
@@ -166,6 +209,7 @@ func (q *Queries) GetRoutesByName(ctx context.Context, title pgtype.Text) ([]Get
 			&i.Grade,
 			&i.GragName,
 			&i.SectorName,
+			&i.SectorID,
 		); err != nil {
 			return nil, err
 		}
@@ -183,6 +227,8 @@ SELECT
   r.title,
   r.route_type,
   r.grade,
+  r.images ->> 'main' as image_main,
+  r.images ->> 'thumbnail' as image_thumbnail,
   s.name as sector_name
 FROM route as r
 JOIN sector as s
@@ -192,11 +238,13 @@ WHERE
 `
 
 type GetRoutesBySectorRow struct {
-	RouteID    int64       `json:"route_id"`
-	Title      pgtype.Text `json:"title"`
-	RouteType  pgtype.Text `json:"route_type"`
-	Grade      pgtype.Text `json:"grade"`
-	SectorName pgtype.Text `json:"sector_name"`
+	RouteID        int64       `json:"route_id"`
+	Title          pgtype.Text `json:"title"`
+	RouteType      pgtype.Text `json:"route_type"`
+	Grade          pgtype.Text `json:"grade"`
+	ImageMain      interface{} `json:"image_main"`
+	ImageThumbnail interface{} `json:"image_thumbnail"`
+	SectorName     pgtype.Text `json:"sector_name"`
 }
 
 func (q *Queries) GetRoutesBySector(ctx context.Context, sectorID pgtype.Int8) ([]GetRoutesBySectorRow, error) {
@@ -213,6 +261,8 @@ func (q *Queries) GetRoutesBySector(ctx context.Context, sectorID pgtype.Int8) (
 			&i.Title,
 			&i.RouteType,
 			&i.Grade,
+			&i.ImageMain,
+			&i.ImageThumbnail,
 			&i.SectorName,
 		); err != nil {
 			return nil, err
@@ -323,4 +373,63 @@ func (q *Queries) InsertFavuriteClimbsItems(ctx context.Context, arg InsertFavur
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateRouteById = `-- name: UpdateRouteById :one
+UPDATE route
+SET 
+  title       = CASE WHEN $1::text   IS NOT NULL THEN $1::text   ELSE title END,
+  grade       = CASE WHEN $2::text   IS NOT NULL THEN $2::text   ELSE grade END,
+  route_type  = CASE WHEN $3::text   IS NOT NULL THEN $3::text   ELSE route_type END,
+  images      = CASE WHEN $4::jsonb  IS NOT NULL THEN $4::jsonb  ELSE images END,
+  description = CASE WHEN $5::text   IS NOT NULL THEN $5::text   ELSE description END
+WHERE route_id = $6
+RETURNING route_id, sector_id, crag_id, title, grade, route_type, images, description, images ->> 'main' AS image_main, images ->> 'thumbnail' AS image_thumbnail
+`
+
+type UpdateRouteByIdParams struct {
+	Title       string `json:"title"`
+	Grade       string `json:"grade"`
+	RouteType   string `json:"route_type"`
+	Images      []byte `json:"images"`
+	Description string `json:"description"`
+	RouteID     int64  `json:"route_id"`
+}
+
+type UpdateRouteByIdRow struct {
+	RouteID        int64       `json:"route_id"`
+	SectorID       pgtype.Int8 `json:"sector_id"`
+	CragID         pgtype.Int8 `json:"crag_id"`
+	Title          pgtype.Text `json:"title"`
+	Grade          pgtype.Text `json:"grade"`
+	RouteType      pgtype.Text `json:"route_type"`
+	Images         []byte      `json:"images"`
+	Description    pgtype.Text `json:"description"`
+	ImageMain      interface{} `json:"image_main"`
+	ImageThumbnail interface{} `json:"image_thumbnail"`
+}
+
+func (q *Queries) UpdateRouteById(ctx context.Context, arg UpdateRouteByIdParams) (UpdateRouteByIdRow, error) {
+	row := q.db.QueryRow(ctx, updateRouteById,
+		arg.Title,
+		arg.Grade,
+		arg.RouteType,
+		arg.Images,
+		arg.Description,
+		arg.RouteID,
+	)
+	var i UpdateRouteByIdRow
+	err := row.Scan(
+		&i.RouteID,
+		&i.SectorID,
+		&i.CragID,
+		&i.Title,
+		&i.Grade,
+		&i.RouteType,
+		&i.Images,
+		&i.Description,
+		&i.ImageMain,
+		&i.ImageThumbnail,
+	)
+	return i, err
 }

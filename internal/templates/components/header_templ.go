@@ -27,7 +27,7 @@ func Header() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<header>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<header class=\"border-b relative z-50\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -50,7 +50,7 @@ func Header() templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"container py-2 md:py-6\"><div class=\"flex w-full justify-between items-center\"><div><a href=\"/\" class=\"font-nunito-bold text-2xl md:text-3xl\">Suomi topot</a></div><div class=\"flex-grow flex justify-end\"><ul class=\"items-center gap-6 hidden md:flex\"><li>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"container py-2 md:py-6 relative\"><div class=\"flex w-full justify-between items-center\"><div><a href=\"/\" class=\"font-nunito-bold text-2xl md:text-3xl\">Suomi topot</a></div><div class=\"flex-grow flex justify-end\"><ul class=\"items-center gap-6 hidden md:flex\"><li>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -78,20 +78,20 @@ func Header() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if user := middleware.GetUserID(ctx); user.OK {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><a href=\"/favourite-climbs/\" data=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><a href=\"/add-modify/\" data=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(user.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/components/header.templ`, Line: 29, Col: 60}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/components/header.templ`, Line: 29, Col: 54}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">Favourite climbs</a></li>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">Lisää & muokkaa</a></li>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

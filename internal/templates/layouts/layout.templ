@@ -35,10 +35,11 @@ templ Layout(metadata model.Metadata, children...templ.Component) {
     </head>
     <body>
         @components.Header()
+        @components.QuickSearchModal()
         <main id="main">
           { children... }
         </main>
-        @components.QuickSearchModal()
+        @components.Footer()
     </body>
   </html>
 }

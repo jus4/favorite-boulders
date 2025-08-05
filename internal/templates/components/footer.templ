@@ -1,0 +1,27 @@
+package components
+
+import ( 
+  "github.com/jus4/favorite-boulders/internal/middleware"
+)
+
+templ Footer() {
+  <footer class="w-full bg-dark-charkol py-6 min-h-[100px]">
+    <div class="flex justify-between container">
+      <h2 class="text-white text-3xl font-bold uppercase">Suomi topot</h2>
+        <ul class="flex gap-4 items-center">
+          <li>
+            if user := middleware.GetUserID(ctx); user.OK {
+              <a class="text-white" href="/auth/logout">Kirjaudu ulos</a>
+            }
+          </li>
+          <li>
+            if user := middleware.GetUserID(ctx); user.OK {
+              <li><a class="text-white" href="/add-modify/" data={user.ID}>Lisää & muokkaa</a></li>
+            } else {
+              <li><a class="text-white" href="/auth/google/login">Kirjaudu</a></li>
+            }
+          </li>
+        </ul>
+    </div>
+  </footer>
+}

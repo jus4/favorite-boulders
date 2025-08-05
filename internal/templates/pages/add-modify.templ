@@ -1,0 +1,63 @@
+package pages
+
+import (
+  "github.com/jus4/favorite-boulders/internal/templates/components"
+  "github.com/jus4/favorite-boulders/internal/templates/layouts"
+	"github.com/jus4/favorite-boulders/internal/model"
+)
+
+var editRoute = templ.NewOnceHandle()
+
+templ AddModify(metadata model.Metadata, contents templ.Component) {
+  @layouts.Layout(metadata) {
+    <div class="container mt-10 mb-20">
+      <h1 class="text-3xl">Lisää & hallitse</h1>
+      <div class="mt-6">
+        <h2 class="text-xl font-bold">Lisää kuva reitille</h2>
+        <p>Etsi haluamasi reitti haun kautta ja lisää kuva josta ilmenee mistä reitti menee esim. viivojen avulla.</p>
+        <form
+          hx-post="/api/edit-route/"
+          hx-target="#editable-route"
+          hx-swap="innerHTML"
+        >
+          <div class="mt-2">
+            <div class="flex w-full gap-4 mt-4 flex-col md:flex-row">
+              <div class="flex md:items-center flex-col md:flex-row flex-grow">
+                <label class="mr-4">Etsi reitti</label>
+                <input type="hidden" name="climb-id" id="select-editable-climb-id">
+                <input id="select-editable-climb" 
+                  type="search"
+                  class="relative p-2 border rounded-md border-light-gray flex-grow"
+                  name="edit-climb-search" placeholder="Hakusana"
+                  hx-post="/api/select-climb/"
+                  hx-trigger="input changed delay:500ms"
+                  hx-target="#select-climb-to-edit"
+                  hx-params="edit-climb-search"
+                  autocomplete="off"
+                >
+              </div>
+              @components.Button(nil) {
+                Muokkaa
+              }
+            </div>
+            <div id="select-climb-to-edit" class="relative z-30"></div>
+            @editRoute.Once(){
+            <script>
+               document.addEventListener('click', function (e) {
+                 if (e.target.matches('.edit-route-search-result')) {
+                   const { target } = e
+                   const { id } = target.dataset
+                   document.getElementById('select-editable-climb').value = e.target.textContent;
+                   document.getElementById('select-editable-climb-id').value = id
+                   document.getElementById('select-climb-to-edit').innerHTML = ''; // Clear results
+                 }
+               });
+            </script>
+            }
+          </div>
+        </form>
+        <ul id="editable-route"></ul>
+      </div>
+    </div>
+  }
+}

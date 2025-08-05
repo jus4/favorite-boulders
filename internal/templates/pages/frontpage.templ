@@ -8,7 +8,7 @@ import (
 templ FrontPage(metadata model.Metadata, contents templ.Component) {
   @layouts.Layout(metadata) {
    <div class="bg-white">
-     <div id="map" class="relative w-full h-[calc(100vh-48px)] md:h-auto">
+     <div id="map" class="relative w-full h-[calc(100vh-48px)] md:h-auto z-10">
       <div class="flex gap-2 md:gap-4 absolute top-0 w-full bg-dark-charkol z-50">
         <button class="p-2 text-white" id="map-zoom-out-btn">
           <span class="w-[30px] h-[30px] relative block mr-1">
