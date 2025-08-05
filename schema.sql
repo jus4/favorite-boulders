@@ -11,6 +11,8 @@ CREATE TABLE route (
   title           TEXT,
   grade           TEXT,
   route_type      TEXT,
+  images          JSONB,
+  description     TEXT,
   FOREIGN KEY (crag_id) REFERENCES crag(crag_id),
   FOREIGN KEY (sector_id) REFERENCES sector(sector_id)
 );

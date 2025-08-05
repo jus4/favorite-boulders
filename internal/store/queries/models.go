@@ -27,12 +27,14 @@ type Crag struct {
 }
 
 type Route struct {
-	RouteID   int64       `json:"route_id"`
-	SectorID  pgtype.Int8 `json:"sector_id"`
-	CragID    pgtype.Int8 `json:"crag_id"`
-	Title     pgtype.Text `json:"title"`
-	Grade     pgtype.Text `json:"grade"`
-	RouteType pgtype.Text `json:"route_type"`
+	RouteID     int64       `json:"route_id"`
+	SectorID    pgtype.Int8 `json:"sector_id"`
+	CragID      pgtype.Int8 `json:"crag_id"`
+	Title       pgtype.Text `json:"title"`
+	Grade       pgtype.Text `json:"grade"`
+	RouteType   pgtype.Text `json:"route_type"`
+	Images      []byte      `json:"images"`
+	Description pgtype.Text `json:"description"`
 }
 
 type Sector struct {

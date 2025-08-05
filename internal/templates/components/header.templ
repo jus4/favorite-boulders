@@ -5,7 +5,7 @@ import (
 )
 
 templ Header() {
-  <header>
+  <header class="border-b relative z-50">
     if user := middleware.GetUserID(ctx); user.OK {
       <div class="w-full bg-gray py-2"> 
         <div class="container flex justify-end items-center">
@@ -13,7 +13,7 @@ templ Header() {
         </div>
       </div>
     }
-    <div class="container py-2 md:py-6">
+    <div class="container py-2 md:py-6 relative">
       <div class="flex w-full justify-between items-center">
         <div>
           <a href="/" class="font-nunito-bold text-2xl md:text-3xl">Suomi topot</a>
@@ -26,7 +26,7 @@ templ Header() {
               }
             </li>
             if user := middleware.GetUserID(ctx); user.OK {
-              <li><a href="/favourite-climbs/" data={user.ID}>Favourite climbs</a></li>
+              <li><a href="/add-modify/" data={user.ID}>Lisää & muokkaa</a></li>
             } else {
               <li><a href="/auth/google/login">Kirjaudu</a></li>
             }

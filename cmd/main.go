@@ -41,10 +41,12 @@ func main() {
   })
   e.POST("/api/get-routes/", handlers.GetRoutesByName)
   e.POST("/api/search-route/", handlers.SearchRouteByName)
-  e.POST("/api/favourites-create/", handlers.FavouritesCreate )
+  e.POST("/api/select-climb/", handlers.SearchEditClimb)
+  e.POST("/api/edit-route/", handlers.EditRoute) // TODO fix to :id
+  e.POST("/api/update-route/:id", handlers.UpdateRoute)
+  e.GET("/add-modify/", handlers.AddModify)
   e.GET("/api/get-sectors/", handlers.GetSectors)
   e.GET("/api/routes-by-sector/:id", handlers.GetRoutesBySectorId)
-  e.GET("/favourite-climbs/", handlers.FavouriteLists)
   e.Static("/static", "static") 
 
 

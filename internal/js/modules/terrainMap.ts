@@ -15,9 +15,11 @@ class TerrainMap {
   mapZoomInBtn: HTMLButtonElement | null
   mapZoomOutBtn: HTMLButtonElement | null
   userLocationBtn: HTMLButtonElement | null
+  searchSectorIdBtns: NodeListOf<HTMLButtonElement> | null
   ol: any
   // proj4jConfig: () => {projection: any, extent:any, resolutions: any, matrixIds: any}
   mapLayers: {ortokuva: any, maastokartta: any}
+  sectors: any
   view: any
   map: any
   baseLayerGroup: any
@@ -47,6 +49,7 @@ class TerrainMap {
     this.mapZoomInBtn = document.getElementById('map-zoom-in-btn') as HTMLButtonElement | null
     this.mapZoomOutBtn = document.getElementById('map-zoom-out-btn') as HTMLButtonElement | null
     this.userLocationBtn = document.getElementById('user-loc-btn') as HTMLButtonElement | null
+    this.searchSectorIdBtns = document.querySelectorAll('.js-search-route-sector-id')
 
     this.sectorElements = {
       popup: document.getElementById('popup'),
@@ -159,7 +162,6 @@ class TerrainMap {
 
   async handleSectorClick(evt) {
     const feature = this.map.forEachFeatureAtPixel(evt.pixel, f => f, { hitTolerance: 10 });
-    console.log(this.sectorElements)
     if (feature && this.sectorElements.popupContent && this.sectorElements.sectorRouteList ) {
       const coordinates = feature.getGeometry().getCoordinates();
       const name = feature.get('name');
@@ -239,21 +241,53 @@ class TerrainMap {
     }
   }
 
+  zoomToSector(sectorId:number, vectorLayer:any, map:any) {
+    const source = vectorLayer.getSource();
+    const features = source.getFeatures();
+  
+    const targetFeature = features.find(f => f.get('sectorId') == sectorId);
+  
+    if (targetFeature) {
+      const geometry = targetFeature.getGeometry();
+      const size = map.getSize();
+  
+      map.getView().fit(geometry, {
+        size: size,
+        padding: [50, 50, 50, 50], // Optional
+        maxZoom: 14,               // Optional: set a maximum zoom level
+        duration: 1000             // Optional: animate the zoom
+      });
+      globalThis?.closeQuickSearchModal()
+    } else {
+      console.warn(`Sector with ID ${sectorId} not found.`);
+    }
+  }
+
+  // Route search 
+  searchBarRouteSearch(e) {
+    const { target } = e
+    const button = target.closest('.js-search-route-sector-id');
+    if (!button) return
+
+    const { sectorId } = button.dataset
+    if (!sectorId) return
+
+    this.zoomToSector(sectorId, this.sectors, this.map)
+  }
+
   async init() {
     if ( typeof globalThis?.proj4 === 'undefined' || typeof globalThis?.ol === 'undefined') {
       console.warn('failed to init map')
     }
+    this.sectors = await sectors
 
     this.topMenuEventListeners()
-
-    // Request user location
-
     this.map.on('singleclick', this.handleSectorClick.bind(this))
-    const sectorLayer = await sectors
     this.map.addOverlay(this.sectorOverlay);
     this.map.getView().fit(proj4Config.extent, { size: this.map.getSize() });
-    this.map.addLayer(sectorLayer);
+    this.map.addLayer(this.sectors);
     this.map.addLayer(this.userLocationLayer);
+    window.addEventListener('click', this.searchBarRouteSearch.bind(this))
 
   }
 }

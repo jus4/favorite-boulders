@@ -25,7 +25,7 @@ var noResultsFound = templ.ComponentFunc(func(ctx context.Context, w io.Writer) 
 })
 
 var notFoundTxt = templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
-  _, err := w.Write([]byte("<p>No routes found</p>"))
+  _, err := w.Write([]byte("<p>Ei haku tuloksia</p>"))
   return err
 })
 
@@ -37,7 +37,7 @@ func GetRoutesByName(c echo.Context) error {
 
   routes, err := FetchRoutesByName(keyword)
   if err != nil {
-    fmt.Fprintf(os.Stderr, "Failed to get routes: %v\n", err)
+    fmt.Fprintf(os.Stderr, "Haku epäonnistui: %v\n", err)
     return helpers.Render(c, http.StatusInternalServerError, notFoundTxt)
   }
 
@@ -47,6 +47,7 @@ func GetRoutesByName(c echo.Context) error {
     routeData[i] = components.RouteListProps{
       Name: k.Title.String,
       SectorName: k.SectorName.String,
+      SectorId: strconv.FormatInt(k.SectorID, 10),
     }
   }
   return helpers.Render(c, http.StatusOK, components.RouteList(routeData))
@@ -81,6 +82,34 @@ func SearchRouteByName(c echo.Context) error {
   return helpers.Render(c, http.StatusOK, searchResult)
 }
 
+func SearchEditClimb(c echo.Context) error {
+  keyword := c.FormValue("edit-climb-search")
+  routes, err := FetchRoutesByName(keyword)
+
+  if err != nil {
+    fmt.Fprintf(os.Stderr, "Failed to get routes: %v\n", err)
+    return echo.NewHTTPError(http.StatusInternalServerError, "no results found")
+  }
+
+
+  if len(keyword) <= 2 {
+    return helpers.Render(c, http.StatusOK, noResultsFound)
+  }
+
+  mappedRoutes := []components.FavouritesListProps{}
+  for _, item := range routes {
+    mappedRoutes = append(mappedRoutes, components.FavouritesListProps{
+      Name: item.Title.String, 
+      SectorName: item.SectorName.String, 
+      Grade: item.Grade.String,
+      ID:strconv.FormatInt(item.RouteID, 10),
+    })
+  }
+  searchResult := components.SelectEditableRoute(mappedRoutes)
+
+  return helpers.Render(c, http.StatusOK, searchResult)
+}
+
 type GetRoutesResponse struct {
   Message string `json:"message"`
   Routes []queries.GetRoutesBySectorRow `json:"routes"`
@@ -107,6 +136,8 @@ func GetRoutesBySectorId(c echo.Context) error {
       Name: i.Title.String,
       Grade: i.Grade.String,
       Id: strconv.FormatInt(i.RouteID, 10),
+      Image: fmt.Sprint(i.ImageMain),
+      RouteType: i.RouteType.String,
     })
   }
   routesRendered := components.SectorRouteList(routes, sectorName)

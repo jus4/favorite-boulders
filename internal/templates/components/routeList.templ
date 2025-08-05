@@ -1,10 +1,17 @@
 package components
 
+import ( 
+  "fmt"
+)
+
 type RouteListProps struct { 
   Id string
   Name string
   SectorName string
+  RouteType string
   Grade string
+  Image string
+  SectorId string
 }
 
 type FavouritesListProps struct { 
@@ -14,13 +21,26 @@ type FavouritesListProps struct {
   ID string
 }
 
+
+type EditRouteProps struct { 
+  Name string
+  SectorName string
+  CragName string
+  Grade string
+  ID string
+  RouteType string
+  Image string
+  Description string
+}
+
 templ RouteList(routes []RouteListProps) {
   <ul>
   for _, item := range routes {
-    <li class="py-2 px-4">
-      <span>{item.Name}</span>
-      <span class="px-2">|</span>
-      <span>{item.SectorName}</span>
+    <li class="py-2 px-2">
+      <button class="js-search-route-sector-id" data-sector-id={item.SectorId}>
+        <span>{item.Name}</span>,
+        <span>{item.SectorName}</span>
+      </button>
     </li>
   }
   </ul>
@@ -32,12 +52,14 @@ templ SectorRouteList( routes []RouteListProps, title string) {
     <ul>
     for _, item := range routes {
       <li class="py-1 text-white border-b border-dark-charkol px-8 py-4">
-        <div class="flex w-full justify-between">
-          <div class="flex flex-col">
-            <div>{item.Name}</div>
-            <span>{item.Grade}</span>
-          </div>
-          <button data-route-id={ item.Id } class="border js-route-info-btn">></button>
+        <div class="w-full">
+          <button data-route-id={ item.Id } class="w-full flex flex-row justify-between py-2 js-route-info-btn">
+              <div clas="flex flex-col">
+                <div class="text-left mb-2">{item.Name}</div>
+                <div class="text-sm text-left">{item.Grade}, <span>{item.RouteType}</span></div>
+                </div>
+              <div>></div> 
+          </button>
         </div>
       </li>
     }
@@ -47,7 +69,12 @@ templ SectorRouteList( routes []RouteListProps, title string) {
         <div data-route-info={ item.Id }>
           <h3 class="text-white font-bold py-4 px-8">{ item.Name }</h3>
           <div>
+
+          if item.Image != "<nil>"  {
+            <img src={item.Image} class="w-full" />
+          } else {
             <img src="https://placehold.co/600x800" />
+          }
           </div>
         </div>
       }
@@ -63,6 +90,90 @@ templ FavouriteRouteSelector( routes []FavouritesListProps ) {
   <ul class="absolute top-0 left-0 border w-full z-30 bg-white">
     for _, item := range routes {
      <li>{item.Name} - {item.Grade} | {item.SectorName} <button data-name={item.Name}  data-id={item.ID} type="button" class="add-route-btn">Add to list</button></li>
+    }
+  </ul>
+}
+
+templ EditRoute( route EditRouteProps  ) {
+  <form 
+    class="flex flex-col md:flex-row overflow-hidden"
+    hx-post={ fmt.Sprintf("/api/update-route/%s", route.ID) }
+    hx-swap="outerHTML"
+    hx-encoding="multipart/form-data"
+    enctype="multipart/form-data"
+  >
+    <div class="w-full md:w-1/2">
+    if route.Image != "<nil>"  {
+      <img src={route.Image} class="w-full rounded-md" />
+      <div>
+        <label>Päivitä kuva</label>
+        <input type="file" name="image" accept="image/*" capture="environment">
+      </div>
+    } else {
+      <img src="https://placehold.co/500x600" class="w-full" />
+      <div>
+        <label>Lisää kuva</label>
+        <input type="file" name="image" accept=".jpg,.jpeg,.png" capture="environment">
+      </div>
+    }
+    </div>
+    <div class="w-full md:w-1/2 pt-6 md:pl-6">
+      <div>
+       <h2>
+         <input class="text-4xl font-bold w-full pb-2" type="text" name="name" value={route.Name}>
+       </h2>
+       <h3>
+         <input class="text-2xl font-bold w-full pb-2" type="text" name="grade" value={route.Grade}>
+       </h3>
+       <h3 class="pb-2 flex gap-2 items-center">
+         <label class="font-bold">Tyyppi:</label>
+         <select name="route_type" class="py-2 pl-2 pr-4 rounded-md">
+          <option 
+
+            value="Boulder" 
+            if route.RouteType == "Boulder" {
+              selected
+            }
+          >Boulderi</option>
+          <option 
+            value="Sport" 
+            if route.RouteType == "Sport" {
+              selected
+            }
+          >
+          Sportti</option>
+          <option 
+            value="Trad"
+            if route.RouteType == "Trad" {
+              selected
+            }
+          >Trädi</option>
+         </select>
+       </h3>
+       <div class="w-full flex flex-col mb-4">
+         <label class="font-bold pb-2">Kuvaus:</label>
+         <textarea name="description" class="border rounded-md border-light-gray p-2 h-[300px]">{route.Description}</textarea>
+       </div>
+      </div>
+      @Button(nil) {
+        Päivitä
+      }
+    </div>
+
+  </form>
+}
+
+
+templ SelectEditableRoute( routes []FavouritesListProps ) {
+  <input type="hidden" name="routes_include" />
+  <ul class="absolute top-0 left-0 border w-full z-30 bg-white">
+    for _, item := range routes {
+     <li 
+      class="edit-route-search-result"
+      data-name={item.Name}  
+      data-id={item.ID}>
+      {item.Name} - {item.Grade} | {item.SectorName}
+    </li>
     }
   </ul>
 }

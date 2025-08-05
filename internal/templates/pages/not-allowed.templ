@@ -1,0 +1,20 @@
+package pages
+
+import (
+  "github.com/jus4/favorite-boulders/internal/templates/layouts"
+  "github.com/jus4/favorite-boulders/internal/model"
+)
+
+templ NotAllowed(metadata model.Metadata, contents templ.Component) {
+  @layouts.Layout(metadata) {
+    <div class="container">
+      <div class="bg-white text-center my-16">
+        <h1 class="text-5xl font-bold">Ei pääsyä!</h1>
+        <p class="my-6">Kirjaudu sisään</p>
+        if contents != nil {
+          @contents
+        }
+      </div>
+    </div>
+  }
+}
