@@ -1,91 +1,111 @@
 (() => {
-  // internal/js/modules/proj4Config.ts
-  var proj4jConfig = () => {
-    const proj4 = globalThis.proj4;
-    const ol3 = globalThis.ol;
-    proj4.defs("EPSG:3067", "+proj=utm +zone=35 +ellps=GRS80 +units=m +no_defs");
-    ol3.proj.proj4.register(proj4);
-    const projection = ol3.proj.get("EPSG:3067");
-    const extent = [-548576, 6291456, 1548576, 8388608];
-    const resolutions = [
-      8192,
-      4096,
-      2048,
-      1024,
-      512,
-      256,
-      128,
-      64,
-      32,
-      16,
-      8,
-      4,
-      2,
-      1,
-      0.5
-    ];
-    const matrixIds = resolutions.map((_, i) => i);
-    return {
-      projection,
-      extent,
-      resolutions,
-      matrixIds
-    };
+  var __defProp = Object.defineProperty;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __esm = (fn, res) => function __init() {
+    return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
   };
-  var proj4Config_default = proj4jConfig();
+  var __export = (target, all) => {
+    for (var name in all)
+      __defProp(target, name, { get: all[name], enumerable: true });
+  };
+
+  // internal/js/modules/proj4Config.ts
+  var proj4jConfig, proj4Config_default;
+  var init_proj4Config = __esm({
+    "internal/js/modules/proj4Config.ts"() {
+      proj4jConfig = () => {
+        const proj4 = globalThis.proj4;
+        const ol3 = globalThis.ol;
+        proj4.defs("EPSG:3067", "+proj=utm +zone=35 +ellps=GRS80 +units=m +no_defs");
+        ol3.proj.proj4.register(proj4);
+        const projection = ol3.proj.get("EPSG:3067");
+        const extent = [-548576, 6291456, 1548576, 8388608];
+        const resolutions = [
+          8192,
+          4096,
+          2048,
+          1024,
+          512,
+          256,
+          128,
+          64,
+          32,
+          16,
+          8,
+          4,
+          2,
+          1,
+          0.5
+        ];
+        const matrixIds = resolutions.map((_, i) => i);
+        return {
+          projection,
+          extent,
+          resolutions,
+          matrixIds
+        };
+      };
+      proj4Config_default = proj4jConfig();
+    }
+  });
 
   // internal/js/modules/mapLayers.ts
-  var ol = globalThis.ol;
-  var mapLayers = () => {
-    const maastokartta = new ol.layer.Tile({
-      title: "Maastokartta",
-      visible: true,
-      type: "base",
-      source: new ol.source.WMTS({
-        url: "/proxy/wmts/1.0.0/maastokartta/default/ETRS-TM35FIN/{TileMatrix}/{TileRow}/{TileCol}.png",
-        requestEncoding: "REST",
-        layer: "maastokartta",
-        matrixSet: "ETRS-TM35FIN",
-        format: "image/png",
-        projection: proj4Config_default.projection,
-        tileGrid: new ol.tilegrid.WMTS({
-          origin: ol.extent.getTopLeft(proj4Config_default.extent),
-          resolutions: proj4Config_default.resolutions,
-          matrixIds: proj4Config_default.matrixIds
-        }),
-        style: "default",
-        wrapX: false
-      })
-    });
-    const ortokuva = new ol.layer.Tile({
-      title: "Ortokuva",
-      visible: false,
-      type: "base",
-      source: new ol.source.WMTS({
-        url: "/proxy/wmts/1.0.0/ortokuva/default/ETRS-TM35FIN/{TileMatrix}/{TileRow}/{TileCol}.png",
-        requestEncoding: "REST",
-        layer: "ortokuva",
-        matrixSet: "ETRS-TM35FIN",
-        format: "image/png",
-        projection: proj4Config_default.projection,
-        tileGrid: new ol.tilegrid.WMTS({
-          origin: ol.extent.getTopLeft(proj4Config_default.extent),
-          resolutions: proj4Config_default.resolutions,
-          matrixIds: proj4Config_default.matrixIds
-        }),
-        style: "default",
-        wrapX: false
-      })
-    });
-    return {
-      maastokartta,
-      ortokuva
-    };
-  };
-  var mapLayers_default = mapLayers;
+  var ol, mapLayers, mapLayers_default;
+  var init_mapLayers = __esm({
+    "internal/js/modules/mapLayers.ts"() {
+      init_proj4Config();
+      ol = globalThis.ol;
+      mapLayers = () => {
+        const maastokartta = new ol.layer.Tile({
+          title: "Maastokartta",
+          visible: true,
+          type: "base",
+          source: new ol.source.WMTS({
+            url: "/proxy/wmts/1.0.0/maastokartta/default/ETRS-TM35FIN/{TileMatrix}/{TileRow}/{TileCol}.png",
+            requestEncoding: "REST",
+            layer: "maastokartta",
+            matrixSet: "ETRS-TM35FIN",
+            format: "image/png",
+            projection: proj4Config_default.projection,
+            tileGrid: new ol.tilegrid.WMTS({
+              origin: ol.extent.getTopLeft(proj4Config_default.extent),
+              resolutions: proj4Config_default.resolutions,
+              matrixIds: proj4Config_default.matrixIds
+            }),
+            style: "default",
+            wrapX: false
+          })
+        });
+        const ortokuva = new ol.layer.Tile({
+          title: "Ortokuva",
+          visible: false,
+          type: "base",
+          source: new ol.source.WMTS({
+            url: "/proxy/wmts/1.0.0/ortokuva/default/ETRS-TM35FIN/{TileMatrix}/{TileRow}/{TileCol}.png",
+            requestEncoding: "REST",
+            layer: "ortokuva",
+            matrixSet: "ETRS-TM35FIN",
+            format: "image/png",
+            projection: proj4Config_default.projection,
+            tileGrid: new ol.tilegrid.WMTS({
+              origin: ol.extent.getTopLeft(proj4Config_default.extent),
+              resolutions: proj4Config_default.resolutions,
+              matrixIds: proj4Config_default.matrixIds
+            }),
+            style: "default",
+            wrapX: false
+          })
+        });
+        return {
+          maastokartta,
+          ortokuva
+        };
+      };
+      mapLayers_default = mapLayers;
+    }
+  });
 
   // internal/js/modules/sectors.ts
-  var GET_SECTORS_API_URL = "/api/get-sectors/";
   async function getLocations() {
     try {
       const response = await fetch(GET_SECTORS_API_URL);
@@ -98,294 +118,321 @@
       console.warn(err);
     }
   }
-  var ol2 = globalThis.ol;
-  var sectors = async () => {
-    const locationsData = await getLocations();
-    const locations = locationsData.map((s) => {
-      return {
-        name: s.name,
-        coords: [s.longitude, s.latitude],
-        sectorId: s.sector_id,
-        cragName: s.crag_name,
-        cragId: s.crag_id
-      };
-    });
-    const sectorMapFeatures = locations.map((loc) => {
-      const transformed = ol2.proj.transform(loc.coords, "EPSG:4326", "EPSG:3067");
-      return new ol2.Feature({
-        geometry: new ol2.geom.Point(transformed),
-        name: loc.name,
-        sectorId: loc.sectorId,
-        cragName: loc.cragName,
-        cragId: loc.cragId
-      });
-    });
-    const vectorSource = new ol2.source.Vector({
-      features: sectorMapFeatures
-    });
-    const vectorLayer = new ol2.layer.WebGLVector({
-      source: vectorSource,
-      style: {
-        "circle-radius": 5,
-        "circle-fill-color": "blue",
-        "circle-stroke-color": "white",
-        "circle-stroke-width": 1
-      }
-    });
-    return vectorLayer;
-  };
-  var sectors_default = sectors();
-
-  // internal/js/modules/terrainMap.ts
-  var TerrainMap = class {
-    getSectorsUrl;
-    getRoutesBySectorId;
-    routeInfoVisible;
-    sectorInfoContainer;
-    sectorInfo;
-    sectorInfoContent;
-    closeSectorRouteInfo;
-    mapOrtokuvaBtn;
-    mapMaastokarttaBtn;
-    mapZoomInBtn;
-    mapZoomOutBtn;
-    userLocationBtn;
-    searchSectorIdBtns;
-    ol;
-    // proj4jConfig: () => {projection: any, extent:any, resolutions: any, matrixIds: any}
-    mapLayers;
-    sectors;
-    view;
-    map;
-    baseLayerGroup;
-    proj4;
-    userLocationStyle;
-    userLocationLayer;
-    sectorElements;
-    sectorOverlay;
-    constructor() {
-      this.ol = globalThis.ol;
-      this.getSectorsUrl = "/api/get-sectors/";
-      this.getRoutesBySectorId = "/api/routes-by-sector/";
-      this.routeInfoVisible = false;
-      this.sectorInfoContainer = document.getElementById("sector-route-info");
-      this.sectorInfo = document.getElementById("sector-info");
-      this.sectorInfoContent = document.getElementById("sector-route-info-content");
-      this.closeSectorRouteInfo = document.getElementById("close-route-info-btn");
-      this.mapOrtokuvaBtn = document.getElementById("ortokuva-map-btn");
-      this.mapMaastokarttaBtn = document.getElementById("maastokartta-map-btn");
-      this.mapZoomInBtn = document.getElementById("map-zoom-in-btn");
-      this.mapZoomOutBtn = document.getElementById("map-zoom-out-btn");
-      this.userLocationBtn = document.getElementById("user-loc-btn");
-      this.searchSectorIdBtns = document.querySelectorAll(".js-search-route-sector-id");
-      this.sectorElements = {
-        popup: document.getElementById("popup"),
-        popupContent: document.getElementById("popup-content"),
-        sectorInfo: document.getElementById("sector-info"),
-        sectorRouteList: document.querySelector(".sector-route-list")
-      };
-      this.sectorOverlay = new this.ol.Overlay({
-        element: this.sectorElements.popup,
-        autoPan: true,
-        autoPanAnimation: {
-          duration: 250
-        }
-      });
-      this.mapLayers = mapLayers_default();
-      this.baseLayerGroup = new this.ol.layer.Group({
-        title: "Base Maps",
-        layers: [this.mapLayers.maastokartta, this.mapLayers.ortokuva]
-      });
-      this.view = new this.ol.View({
-        projection: proj4Config_default.projection,
-        center: this.ol.extent.getCenter(proj4Config_default.extent),
-        zoom: 0,
-        resolutions: proj4Config_default.resolutions,
-        extent: proj4Config_default.extent
-      });
-      this.map = new this.ol.Map({
-        target: "map",
-        layers: [this.baseLayerGroup],
-        view: this.view,
-        controls: []
-      });
-      this.userLocationStyle = new this.ol.style.Style({
-        image: new this.ol.style.Circle({
-          radius: 10,
-          fill: new this.ol.style.Fill({ color: "red" }),
-          stroke: new this.ol.style.Stroke({ color: "white", width: 2 })
-        })
-      });
-      this.userLocationLayer = new this.ol.layer.Vector({
-        source: new this.ol.source.Vector()
-      });
-      this.proj4 = globalThis.proj4;
-      this.proj4.defs("EPSG:3067", "+proj=utm +zone=35 +ellps=GRS80 +units=m +no_defs");
-      this.ol.proj.proj4.register(this.proj4);
-      if (!this.sectorInfoContent || !this.sectorInfo || !this.sectorInfoContainer || !this.closeSectorRouteInfo) return;
-    }
-    async getRoutesBySector(id, name) {
-      try {
-        const response = await fetch(`${this.getRoutesBySectorId}${id}?name=${name}`);
-        if (!response.ok) {
-          throw new Error("Fetch error");
-        }
-        const html = await response.text();
-        return html;
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    showRouteInfo(routeId) {
-      if (!this.sectorInfoContainer || !this.sectorInfo || !this.sectorInfoContent) return;
-      const routeInfoContent = this.sectorInfo.querySelector(`[data-route-info="${routeId}"]`);
-      this.sectorInfoContent.innerHTML = routeInfoContent?.innerHTML || "";
-      this.sectorInfoContainer.classList.remove("hidden");
-      this.routeInfoVisible = true;
-    }
-    closeRouteInfoBtn() {
-      this.sectorInfoContainer?.classList.add("hidden");
-    }
-    hideRouteInfo() {
-      if (!this.routeInfoVisible) return;
-      this.sectorInfoContainer?.classList.add("hidden");
-    }
-    handleRouteInfoClick(e) {
-      const target = e.currentTarget;
-      const { routeId } = target.dataset;
-      if (!routeId) return;
-      this.showRouteInfo(routeId);
-    }
-    initRouteButtonEventListeners() {
-      const routeInfoButtons = document.querySelectorAll(".js-route-info-btn");
-      this.closeSectorRouteInfo?.addEventListener("click", this.closeRouteInfoBtn.bind(this));
-      if (routeInfoButtons && routeInfoButtons.length > 0) {
-        routeInfoButtons.forEach((infoBtn) => infoBtn.addEventListener("click", this.handleRouteInfoClick.bind(this)));
-      }
-    }
-    cleanRoutButtonEventListers() {
-      const routeInfoButtons = document.querySelectorAll(".js-route-info-btn");
-      if (routeInfoButtons && routeInfoButtons.length > 0) {
-        routeInfoButtons.forEach((infoBtn) => infoBtn.removeEventListener("click", this.handleRouteInfoClick.bind(this)));
-      }
-    }
-    async handleSectorClick(evt) {
-      const feature = this.map.forEachFeatureAtPixel(evt.pixel, (f) => f, { hitTolerance: 10 });
-      if (feature && this.sectorElements.popupContent && this.sectorElements.sectorRouteList) {
-        const coordinates = feature.getGeometry().getCoordinates();
-        const name = feature.get("name");
-        const sectorId = feature.get("sectorId");
-        const cragName = feature.get("cragName");
-        const resultHtml = await this.getRoutesBySector(sectorId, name);
-        this.cleanRoutButtonEventListers();
-        this.hideRouteInfo();
-        this.sectorElements.sectorRouteList.innerHTML = resultHtml || "";
-        this.initRouteButtonEventListeners();
-        this.sectorElements.popupContent.innerHTML = `<strong>${cragName}<br/>${name}</strong>`;
-        this.sectorElements.sectorInfo?.classList.remove("hidden");
-        this.sectorOverlay.setPosition(coordinates);
-      } else {
-        this.sectorElements.sectorInfo?.classList.add("hidden");
-        this.sectorOverlay.setPosition(void 0);
-      }
-    }
-    setMapLocation(longitude, latitude) {
-      const transformed = this.ol.proj.transform([longitude, latitude], "EPSG:4326", "EPSG:3067");
-      this.map.getView().setCenter(transformed);
-      this.map.getView().setZoom(8);
-    }
-    showUserLocation(position) {
-      const { latitude, longitude } = position.coords;
-      const transformed = this.ol.proj.transform([longitude, latitude], "EPSG:4326", "EPSG:3067");
-      const userFeature = new this.ol.Feature(new this.ol.geom.Point(transformed));
-      userFeature.setStyle(this.userLocationStyle);
-      this.userLocationLayer.getSource().clear();
-      this.userLocationLayer.getSource().addFeature(userFeature);
-      this.setMapLocation(longitude, latitude);
-    }
-    topMenuEventListeners() {
-      if (this.mapOrtokuvaBtn && this.mapMaastokarttaBtn) {
-        this.mapOrtokuvaBtn.addEventListener("click", () => {
-          this.mapLayers.ortokuva.setVisible(true);
-          this.mapLayers.maastokartta.setVisible(false);
+  var GET_SECTORS_API_URL, ol2, sectors, sectors_default;
+  var init_sectors = __esm({
+    "internal/js/modules/sectors.ts"() {
+      GET_SECTORS_API_URL = "/api/get-sectors/";
+      ol2 = globalThis.ol;
+      sectors = async () => {
+        const locationsData = await getLocations();
+        const locations = locationsData.map((s) => {
+          return {
+            name: s.name,
+            coords: [s.longitude, s.latitude],
+            sectorId: s.sector_id,
+            cragName: s.crag_name,
+            cragId: s.crag_id
+          };
         });
-        this.mapMaastokarttaBtn.addEventListener("click", () => {
-          this.mapLayers.ortokuva.setVisible(false);
-          this.mapLayers.maastokartta.setVisible(true);
+        const sectorMapFeatures = locations.map((loc) => {
+          const transformed = ol2.proj.transform(loc.coords, "EPSG:4326", "EPSG:3067");
+          return new ol2.Feature({
+            geometry: new ol2.geom.Point(transformed),
+            name: loc.name,
+            sectorId: loc.sectorId,
+            cragName: loc.cragName,
+            cragId: loc.cragId
+          });
         });
-      }
-      if (this.mapZoomInBtn && this.mapZoomOutBtn) {
-        this.mapZoomInBtn.addEventListener("click", () => {
-          let zoom = this.view.getZoom();
-          this.view.setZoom(zoom + 1);
+        const vectorSource = new ol2.source.Vector({
+          features: sectorMapFeatures
         });
-        this.mapZoomOutBtn.addEventListener("click", () => {
-          let zoom = this.view.getZoom();
-          this.view.setZoom(zoom - 1);
-        });
-      }
-      if (this.userLocationBtn) {
-        this.userLocationBtn.addEventListener("click", () => {
-          if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition(this.showUserLocation.bind(this), () => {
-            }, {
-              enableHighAccuracy: true
-            });
-          } else {
-            alert("Geolocation is not supported by your browser.");
+        const vectorLayer = new ol2.layer.WebGLVector({
+          source: vectorSource,
+          style: {
+            "circle-radius": 5,
+            "circle-fill-color": "blue",
+            "circle-stroke-color": "white",
+            "circle-stroke-width": 1
           }
         });
-      }
+        return vectorLayer;
+      };
+      sectors_default = sectors();
     }
-    zoomToSector(sectorId, vectorLayer, map) {
-      const source = vectorLayer.getSource();
-      const features = source.getFeatures();
-      const targetFeature = features.find((f) => f.get("sectorId") == sectorId);
-      if (targetFeature) {
-        const geometry = targetFeature.getGeometry();
-        const size = map.getSize();
-        map.getView().fit(geometry, {
-          size,
-          padding: [50, 50, 50, 50],
-          // Optional
-          maxZoom: 14,
-          // Optional: set a maximum zoom level
-          duration: 1e3
-          // Optional: animate the zoom
-        });
-        globalThis?.closeQuickSearchModal();
-      } else {
-        console.warn(`Sector with ID ${sectorId} not found.`);
-      }
+  });
+
+  // internal/js/modules/terrainMap.ts
+  var terrainMap_exports = {};
+  __export(terrainMap_exports, {
+    default: () => terrainMap_default
+  });
+  var TerrainMap, terrainMap_default;
+  var init_terrainMap = __esm({
+    "internal/js/modules/terrainMap.ts"() {
+      init_mapLayers();
+      init_proj4Config();
+      init_sectors();
+      TerrainMap = class {
+        getSectorsUrl;
+        getRoutesBySectorId;
+        routeInfoVisible;
+        sectorInfoContainer;
+        sectorInfo;
+        sectorInfoContent;
+        closeSectorRouteInfo;
+        mapOrtokuvaBtn;
+        mapMaastokarttaBtn;
+        mapZoomInBtn;
+        mapZoomOutBtn;
+        userLocationBtn;
+        searchSectorIdBtns;
+        ol;
+        // proj4jConfig: () => {projection: any, extent:any, resolutions: any, matrixIds: any}
+        mapLayers;
+        sectors;
+        view;
+        map;
+        baseLayerGroup;
+        proj4;
+        userLocationStyle;
+        userLocationLayer;
+        sectorElements;
+        sectorOverlay;
+        constructor() {
+          this.ol = globalThis.ol;
+          this.getSectorsUrl = "/api/get-sectors/";
+          this.getRoutesBySectorId = "/api/routes-by-sector/";
+          this.routeInfoVisible = false;
+          this.sectorInfoContainer = document.getElementById("sector-route-info");
+          this.sectorInfo = document.getElementById("sector-info");
+          this.sectorInfoContent = document.getElementById("sector-route-info-content");
+          this.closeSectorRouteInfo = document.getElementById("close-route-info-btn");
+          this.mapOrtokuvaBtn = document.getElementById("ortokuva-map-btn");
+          this.mapMaastokarttaBtn = document.getElementById("maastokartta-map-btn");
+          this.mapZoomInBtn = document.getElementById("map-zoom-in-btn");
+          this.mapZoomOutBtn = document.getElementById("map-zoom-out-btn");
+          this.userLocationBtn = document.getElementById("user-loc-btn");
+          this.searchSectorIdBtns = document.querySelectorAll(".js-search-route-sector-id");
+          this.sectorElements = {
+            popup: document.getElementById("popup"),
+            popupContent: document.getElementById("popup-content"),
+            sectorInfo: document.getElementById("sector-info"),
+            sectorRouteList: document.querySelector(".sector-route-list")
+          };
+          this.sectorOverlay = new this.ol.Overlay({
+            element: this.sectorElements.popup,
+            autoPan: true,
+            autoPanAnimation: {
+              duration: 250
+            }
+          });
+          this.mapLayers = mapLayers_default();
+          this.baseLayerGroup = new this.ol.layer.Group({
+            title: "Base Maps",
+            layers: [this.mapLayers.maastokartta, this.mapLayers.ortokuva]
+          });
+          this.view = new this.ol.View({
+            projection: proj4Config_default.projection,
+            center: this.ol.extent.getCenter(proj4Config_default.extent),
+            zoom: 0,
+            resolutions: proj4Config_default.resolutions,
+            extent: proj4Config_default.extent
+          });
+          this.map = new this.ol.Map({
+            target: "map",
+            layers: [this.baseLayerGroup],
+            view: this.view,
+            controls: []
+          });
+          this.userLocationStyle = new this.ol.style.Style({
+            image: new this.ol.style.Circle({
+              radius: 10,
+              fill: new this.ol.style.Fill({ color: "red" }),
+              stroke: new this.ol.style.Stroke({ color: "white", width: 2 })
+            })
+          });
+          this.userLocationLayer = new this.ol.layer.Vector({
+            source: new this.ol.source.Vector()
+          });
+          this.proj4 = globalThis.proj4;
+          this.proj4.defs("EPSG:3067", "+proj=utm +zone=35 +ellps=GRS80 +units=m +no_defs");
+          this.ol.proj.proj4.register(this.proj4);
+          if (!this.sectorInfoContent || !this.sectorInfo || !this.sectorInfoContainer || !this.closeSectorRouteInfo) return;
+        }
+        async getRoutesBySector(id, name) {
+          try {
+            const response = await fetch(`${this.getRoutesBySectorId}${id}?name=${name}`);
+            if (!response.ok) {
+              throw new Error("Fetch error");
+            }
+            const html = await response.text();
+            return html;
+          } catch (err) {
+            console.log(err);
+          }
+        }
+        showRouteInfo(routeId) {
+          if (!this.sectorInfoContainer || !this.sectorInfo || !this.sectorInfoContent) return;
+          const routeInfoContent = this.sectorInfo.querySelector(`[data-route-info="${routeId}"]`);
+          this.sectorInfoContent.innerHTML = routeInfoContent?.innerHTML || "";
+          this.sectorInfoContainer.classList.remove("hidden");
+          this.routeInfoVisible = true;
+        }
+        closeRouteInfoBtn() {
+          this.sectorInfoContainer?.classList.add("hidden");
+        }
+        hideRouteInfo() {
+          if (!this.routeInfoVisible) return;
+          this.sectorInfoContainer?.classList.add("hidden");
+        }
+        handleRouteInfoClick(e) {
+          const target = e.currentTarget;
+          const { routeId } = target.dataset;
+          if (!routeId) return;
+          this.showRouteInfo(routeId);
+        }
+        initRouteButtonEventListeners() {
+          const routeInfoButtons = document.querySelectorAll(".js-route-info-btn");
+          this.closeSectorRouteInfo?.addEventListener("click", this.closeRouteInfoBtn.bind(this));
+          if (routeInfoButtons && routeInfoButtons.length > 0) {
+            routeInfoButtons.forEach((infoBtn) => infoBtn.addEventListener("click", this.handleRouteInfoClick.bind(this)));
+          }
+        }
+        cleanRoutButtonEventListers() {
+          const routeInfoButtons = document.querySelectorAll(".js-route-info-btn");
+          if (routeInfoButtons && routeInfoButtons.length > 0) {
+            routeInfoButtons.forEach((infoBtn) => infoBtn.removeEventListener("click", this.handleRouteInfoClick.bind(this)));
+          }
+        }
+        async handleSectorClick(evt) {
+          const feature = this.map.forEachFeatureAtPixel(evt.pixel, (f) => f, { hitTolerance: 10 });
+          if (feature && this.sectorElements.popupContent && this.sectorElements.sectorRouteList) {
+            const coordinates = feature.getGeometry().getCoordinates();
+            const name = feature.get("name");
+            const sectorId = feature.get("sectorId");
+            const cragName = feature.get("cragName");
+            const resultHtml = await this.getRoutesBySector(sectorId, name);
+            this.cleanRoutButtonEventListers();
+            this.hideRouteInfo();
+            this.sectorElements.sectorRouteList.innerHTML = resultHtml || "";
+            this.initRouteButtonEventListeners();
+            this.sectorElements.popupContent.innerHTML = `<strong>${cragName}<br/>${name}</strong>`;
+            this.sectorElements.sectorInfo?.classList.remove("hidden");
+            this.sectorOverlay.setPosition(coordinates);
+          } else {
+            this.sectorElements.sectorInfo?.classList.add("hidden");
+            this.sectorOverlay.setPosition(void 0);
+          }
+        }
+        setMapLocation(longitude, latitude) {
+          const transformed = this.ol.proj.transform([longitude, latitude], "EPSG:4326", "EPSG:3067");
+          this.map.getView().setCenter(transformed);
+          this.map.getView().setZoom(8);
+        }
+        showUserLocation(position) {
+          const { latitude, longitude } = position.coords;
+          const transformed = this.ol.proj.transform([longitude, latitude], "EPSG:4326", "EPSG:3067");
+          const userFeature = new this.ol.Feature(new this.ol.geom.Point(transformed));
+          userFeature.setStyle(this.userLocationStyle);
+          this.userLocationLayer.getSource().clear();
+          this.userLocationLayer.getSource().addFeature(userFeature);
+          this.setMapLocation(longitude, latitude);
+        }
+        topMenuEventListeners() {
+          if (this.mapOrtokuvaBtn && this.mapMaastokarttaBtn) {
+            this.mapOrtokuvaBtn.addEventListener("click", () => {
+              this.mapLayers.ortokuva.setVisible(true);
+              this.mapLayers.maastokartta.setVisible(false);
+            });
+            this.mapMaastokarttaBtn.addEventListener("click", () => {
+              this.mapLayers.ortokuva.setVisible(false);
+              this.mapLayers.maastokartta.setVisible(true);
+            });
+          }
+          if (this.mapZoomInBtn && this.mapZoomOutBtn) {
+            this.mapZoomInBtn.addEventListener("click", () => {
+              let zoom = this.view.getZoom();
+              this.view.setZoom(zoom + 1);
+            });
+            this.mapZoomOutBtn.addEventListener("click", () => {
+              let zoom = this.view.getZoom();
+              this.view.setZoom(zoom - 1);
+            });
+          }
+          if (this.userLocationBtn) {
+            this.userLocationBtn.addEventListener("click", () => {
+              if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(this.showUserLocation.bind(this), () => {
+                }, {
+                  enableHighAccuracy: true
+                });
+              } else {
+                alert("Geolocation is not supported by your browser.");
+              }
+            });
+          }
+        }
+        zoomToSector(sectorId, vectorLayer, map) {
+          const source = vectorLayer.getSource();
+          const features = source.getFeatures();
+          const targetFeature = features.find((f) => f.get("sectorId") == sectorId);
+          if (targetFeature) {
+            const geometry = targetFeature.getGeometry();
+            const size = map.getSize();
+            map.getView().fit(geometry, {
+              size,
+              padding: [50, 50, 50, 50],
+              // Optional
+              maxZoom: 14,
+              // Optional: set a maximum zoom level
+              duration: 1e3
+              // Optional: animate the zoom
+            });
+            globalThis?.closeQuickSearchModal();
+          } else {
+            console.warn(`Sector with ID ${sectorId} not found.`);
+          }
+        }
+        // Route search 
+        searchBarRouteSearch(e) {
+          const { target } = e;
+          const button = target.closest(".js-search-route-sector-id");
+          if (!button) return;
+          const { sectorId } = button.dataset;
+          if (!sectorId) return;
+          this.zoomToSector(sectorId, this.sectors, this.map);
+        }
+        async init() {
+          if (typeof globalThis?.proj4 === "undefined" || typeof globalThis?.ol === "undefined") {
+            console.warn("failed to init map");
+          }
+          this.sectors = await sectors_default;
+          this.topMenuEventListeners();
+          this.map.on("singleclick", this.handleSectorClick.bind(this));
+          this.map.addOverlay(this.sectorOverlay);
+          this.map.getView().fit(proj4Config_default.extent, { size: this.map.getSize() });
+          this.map.addLayer(this.sectors);
+          this.map.addLayer(this.userLocationLayer);
+          window.addEventListener("click", this.searchBarRouteSearch.bind(this));
+        }
+      };
+      terrainMap_default = TerrainMap;
     }
-    // Route search 
-    searchBarRouteSearch(e) {
-      const { target } = e;
-      const button = target.closest(".js-search-route-sector-id");
-      if (!button) return;
-      const { sectorId } = button.dataset;
-      if (!sectorId) return;
-      this.zoomToSector(sectorId, this.sectors, this.map);
-    }
-    async init() {
-      if (typeof globalThis?.proj4 === "undefined" || typeof globalThis?.ol === "undefined") {
-        console.warn("failed to init map");
-      }
-      this.sectors = await sectors_default;
-      this.topMenuEventListeners();
-      this.map.on("singleclick", this.handleSectorClick.bind(this));
-      this.map.addOverlay(this.sectorOverlay);
-      this.map.getView().fit(proj4Config_default.extent, { size: this.map.getSize() });
-      this.map.addLayer(this.sectors);
-      this.map.addLayer(this.userLocationLayer);
-      window.addEventListener("click", this.searchBarRouteSearch.bind(this));
-    }
-  };
-  var terrainMap_default = TerrainMap;
+  });
 
   // internal/js/master.ts
   document.addEventListener("DOMContentLoaded", function() {
-    const newMap = new terrainMap_default();
-    newMap.init();
+    const mapContainer = document.getElementById("map");
+    if (!mapContainer) return;
+    const observer = new IntersectionObserver(async (entries, observer2) => {
+      if (entries[0].isIntersecting) {
+        observer2.disconnect();
+        const module = await Promise.resolve().then(() => (init_terrainMap(), terrainMap_exports));
+        const newMap = new module.default();
+        newMap.init();
+      }
+    });
+    observer.observe(mapContainer);
   });
 })();

@@ -10,6 +10,9 @@ import (
   "log"
   "net/http"
   "os"
+	"time"
+	"github.com/patrickmn/go-cache"
+  "io"
 )
 
 func main() {
@@ -25,8 +28,20 @@ func main() {
   e.GET("/auth/google/callback", handlers.OauthGoogleCallback) 
   e.GET("/auth/logout", handlers.Logout)
   e.GET("/proxy/wmts/*", func(c echo.Context) error {
+    var tileCache = cache.New(30*time.Minute, 1*time.Hour)
 	  tilePath := c.Param("*")
+	  cacheKey := tilePath
     mapApiKey := os.Getenv("MAP_API_KEY")
+
+  	// Check cache
+  	if cached, found := tileCache.Get(cacheKey); found {
+  		cachedData := cached.(map[string]interface{})
+  		body := cachedData["body"].([]byte)
+  		contentType := cachedData["contentType"].(string)
+  
+  		return c.Blob(http.StatusOK, contentType, body)
+  	}
+
 	  // Construct full upstream URL
 	  targetURL := "https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/" + tilePath + "?api-key=" + mapApiKey
 
@@ -37,7 +52,23 @@ func main() {
 	  }
 	  defer resp.Body.Close()
 
-	  return c.Stream(resp.StatusCode, resp.Header.Get("Content-Type"), resp.Body)
+  	// Read full body
+  	bodyBytes, err := io.ReadAll(resp.Body)
+  	if err != nil {
+  		return c.String(http.StatusInternalServerError, "Failed to read tile response")
+  	}
+  
+  	// Cache the response
+  	tileCache.Set(cacheKey, map[string]interface{}{
+  		"body":        bodyBytes,
+  		"contentType": resp.Header.Get("Content-Type"),
+  	}, cache.DefaultExpiration)
+
+
+	  // Serve to client
+	  return c.Blob(resp.StatusCode, resp.Header.Get("Content-Type"), bodyBytes)
+
+	  // return c.Stream(resp.StatusCode, resp.Header.Get("Content-Type"), resp.Body)
   })
   e.POST("/api/get-routes/", handlers.GetRoutesByName)
   e.POST("/api/search-route/", handlers.SearchRouteByName)
