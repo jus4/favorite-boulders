@@ -11,7 +11,7 @@ var styleSheet = "/static/master.css?v=" + timeStamp
 var jsScripts = "/static/master.js?v=" + timeStamp
 
 templ Layout(metadata model.Metadata, children...templ.Component) {
-  <html>
+  <html lang="fi">
     <head>
       <title>
         { metadata.Title }
@@ -21,17 +21,9 @@ templ Layout(metadata model.Metadata, children...templ.Component) {
       }
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <script src="https://unpkg.com/htmx.org@2.0.3"></script>
-      <script src="https://cdn.jsdelivr.net/npm/proj4@2.11.0/dist/proj4.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/ol@v10.5.0/dist/ol.js"></script>
-
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol-layerswitcher@4.1.1/dist/ol-layerswitcher.css" />
-      <script src="https://cdn.jsdelivr.net/npm/ol-layerswitcher@4.1.1/dist/ol-layerswitcher.js"></script>
-
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v10.5.0/ol.css">
-      <link rel="stylesheet" href="http://www.openlayers.org/api/theme/default/style.css">
-      <link href={ styleSheet } rel="stylesheet">
-      <script src={ jsScripts }></script>
+      <link rel="stylesheet" href="https://www.openlayers.org/api/theme/default/style.css">
+      <link  href={ styleSheet } rel="stylesheet">
     </head>
     <body>
         @components.Header()
@@ -40,6 +32,12 @@ templ Layout(metadata model.Metadata, children...templ.Component) {
           { children... }
         </main>
         @components.Footer()
+
+      <script defer src="https://unpkg.com/htmx.org@2.0.3"></script>
+      <script defer src="https://cdn.jsdelivr.net/npm/proj4@2.11.0/dist/proj4.js"></script>
+      <script defer src="https://cdn.jsdelivr.net/npm/ol@v10.5.0/dist/ol.js"></script>
+      <script defer src="https://cdn.jsdelivr.net/npm/ol-layerswitcher@4.1.1/dist/ol-layerswitcher.js"></script>
+      <script defer src={ jsScripts }></script>
     </body>
   </html>
 }

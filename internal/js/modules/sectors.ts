@@ -41,15 +41,25 @@ const sectors = async () => {
     features: sectorMapFeatures
   });
 
-  const vectorLayer = new ol.layer.Vector({
+  // const vectorLayer = new ol.layer.Vector({
+  //   source: vectorSource,
+  //   style: new ol.style.Style({
+  //     image: new ol.style.Circle({
+  //       radius: 5,
+  //       fill: new ol.style.Fill({ color: 'blue' }),
+  //       stroke: new ol.style.Stroke({ color: 'white', width: 1 })
+  //     })
+  //   })
+  // });
+
+  const vectorLayer = new ol.layer.WebGLVector({
     source: vectorSource,
-    style: new ol.style.Style({
-      image: new ol.style.Circle({
-        radius: 5,
-        fill: new ol.style.Fill({ color: 'blue' }),
-        stroke: new ol.style.Stroke({ color: 'white', width: 1 })
-      })
-    })
+    style: {
+      'circle-radius': 5,
+      'circle-fill-color': 'blue',
+      'circle-stroke-color': 'white',
+      'circle-stroke-width': 1
+    }
   });
 
   return vectorLayer

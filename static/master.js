@@ -123,15 +123,14 @@
     const vectorSource = new ol2.source.Vector({
       features: sectorMapFeatures
     });
-    const vectorLayer = new ol2.layer.Vector({
+    const vectorLayer = new ol2.layer.WebGLVector({
       source: vectorSource,
-      style: new ol2.style.Style({
-        image: new ol2.style.Circle({
-          radius: 5,
-          fill: new ol2.style.Fill({ color: "blue" }),
-          stroke: new ol2.style.Stroke({ color: "white", width: 1 })
-        })
-      })
+      style: {
+        "circle-radius": 5,
+        "circle-fill-color": "blue",
+        "circle-stroke-color": "white",
+        "circle-stroke-width": 1
+      }
     });
     return vectorLayer;
   };
