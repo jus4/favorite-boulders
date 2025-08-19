@@ -10,5 +10,9 @@ import (
 )
 
 func HomePage(c echo.Context) error {
-  return helpers.Render(c, http.StatusOK, pages.FrontPage(model.Metadata{Title: "Suomi topot"}, nil))
+  description := "Suomen kalliokiipeily alueet maastokartalla, etsi ja löydä omat suosikkisi."
+  return helpers.Render(c, http.StatusOK, pages.FrontPage(model.Metadata{
+    Title: "Suomi topot", 
+    Description: &description,
+  }, nil))
 }

@@ -4,6 +4,7 @@ import (
 	"github.com/jus4/favorite-boulders/internal/templates/components"
 	"github.com/jus4/favorite-boulders/internal/helpers"
   "github.com/jus4/favorite-boulders/internal/model"
+  "fmt"
 )
 
 var timeStamp = helpers.GetTimeStamp()
@@ -18,7 +19,7 @@ templ Layout(metadata model.Metadata, children...templ.Component) {
         { metadata.Title }
       </title>
       if metadata.Description != nil {
-        <meta content="{ metadata.Description }" name="description">
+        <meta content={ fmt.Sprint(*metadata.Description) } name="description">
       }
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
