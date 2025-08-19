@@ -70,14 +70,14 @@ func Layout(metadata model.Metadata, children ...templ.Component) templ.Componen
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/ol@v10.5.0/ol.css\"><link href=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><link href=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(styleSheet)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/layouts/layout.templ`, Line: 27, Col: 30}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/layouts/layout.templ`, Line: 26, Col: 30}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -118,7 +118,7 @@ func Layout(metadata model.Metadata, children ...templ.Component) templ.Componen
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(jsScripts)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/layouts/layout.templ`, Line: 41, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/layouts/layout.templ`, Line: 40, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
