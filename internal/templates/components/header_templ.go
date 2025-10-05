@@ -50,7 +50,7 @@ func Header() templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"container py-2 md:py-6 relative\"><div class=\"flex w-full justify-between items-center\"><div><a href=\"/\" class=\"font-nunito-bold text-2xl md:text-3xl\">Suomi topot</a></div><div class=\"flex-grow flex justify-end\"><ul class=\"items-center gap-6 hidden md:flex\"><li>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"container py-2 md:py-6 relative\"><div class=\"flex w-full justify-between items-center\"><div><a href=\"/\" class=\"font-nunito-bold text-2xl md:text-3xl\">Suomi Kiipeily</a></div><div class=\"flex-grow flex justify-end\"><ul class=\"items-center gap-6 hidden md:flex\"><li>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -12,7 +12,7 @@ import (
 func HomePage(c echo.Context) error {
   description := "Suomen kalliokiipeily alueet maastokartalla, etsi ja löydä omat suosikkisi."
   return helpers.Render(c, http.StatusOK, pages.FrontPage(model.Metadata{
-    Title: "Suomi topot", 
+    Title: "Suomi kiipeily", 
     Description: &description,
   }, nil))
 }
